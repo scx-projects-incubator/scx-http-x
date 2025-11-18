@@ -436,7 +436,7 @@ public class Http1ReaderTest {
     @Test
     public static void test35_fragmentedStream() throws ScxIOException, AlreadyClosedException, NoMoreDataException {
         // 模拟网络分片读取，每次只提供 1 字节
-        var rawInput = new DefaultByteInput(new InputStreamByteSupplier(new ByteArrayInputStream("3\r\nabc\r\n0\r\n\r\n".getBytes()),1));
+        var rawInput = new DefaultByteInput(new InputStreamByteSupplier(new ByteArrayInputStream("3\r\nabc\r\n0\r\n\r\n".getBytes()), 1));
         var byteSupplier = Http1Reader.readBodyByteInput(new Http1Headers().transferEncoding(CHUNKED), rawInput, 10);
         var bodyInput = new DefaultByteInput(byteSupplier);
         var data = new String(bodyInput.readAll());

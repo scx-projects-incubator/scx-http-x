@@ -2,9 +2,9 @@ package cool.scx.http.x.test;
 
 import cool.scx.http.version.HttpVersion;
 import cool.scx.http.x.http1.status_line.Http1StatusLine;
-import cool.scx.http.x.http1.status_line.InvalidStatusLineStatusCodeException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineHttpVersionException;
+import cool.scx.http.x.http1.status_line.InvalidStatusLineStatusCodeException;
 import org.testng.Assert;
 import org.testng.annotations.Test;
 

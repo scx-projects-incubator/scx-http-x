@@ -11,7 +11,6 @@ import cool.scx.http.method.ScxHttpMethod;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.x.http1.body_supplier.AutoContinueByteSupplier;
 import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
-import cool.scx.http.x.http1.exception.InvalidHttpRequestLineException;
 import cool.scx.http.x.http1.exception.RequestHeaderFieldsTooLargeException;
 import cool.scx.http.x.http1.headers.Http1Headers;
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
