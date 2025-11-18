@@ -19,7 +19,7 @@ public class Http1RequestLineTest {
     }
 
     @Test
-    public static void test1() throws  InvalidRequestLineException, InvalidRequestLineHttpVersionException {
+    public static void test1() throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
 
         //这是正确的
         var http1RequestLine = Http1RequestLine.of("GET /foo HTTP/1.1");

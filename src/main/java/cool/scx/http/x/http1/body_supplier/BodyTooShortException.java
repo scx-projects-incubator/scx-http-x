@@ -1,6 +1,6 @@
 package cool.scx.http.x.http1.body_supplier;
 
-import cool.scx.http.exception.ScxHttpExceptionLike;
+import cool.scx.http.error_handler.ScxHttpExceptionLike;
 import cool.scx.http.status_code.ScxHttpStatusCode;
 import cool.scx.io.exception.ScxIOException;
 
