@@ -1,20 +1,13 @@
 package cool.scx.http.x.http1.headers;
 
-import cool.scx.function.Function2Void;
 import cool.scx.http.headers.ScxHttpHeaderName;
 import cool.scx.http.headers.ScxHttpHeaders;
-import cool.scx.http.headers.ScxHttpHeadersWritable;
-import cool.scx.http.parameters.ParameterEntry;
+import cool.scx.http.headers.ScxHttpHeadersImpl;
 import cool.scx.http.x.http1.headers.connection.Connection;
 import cool.scx.http.x.http1.headers.connection.ScxConnection;
 import cool.scx.http.x.http1.headers.expect.ScxExpect;
 import cool.scx.http.x.http1.headers.transfer_encoding.ScxTransferEncoding;
 import cool.scx.http.x.http1.headers.upgrade.ScxUpgrade;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
 import static cool.scx.http.headers.HttpHeaderName.*;
 
@@ -24,100 +17,34 @@ import static cool.scx.http.headers.HttpHeaderName.*;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class Http1Headers implements ScxHttpHeadersWritable {
+public final class Http1Headers extends ScxHttpHeadersImpl {
 
-    private final ScxHttpHeadersWritable h;
-
-    public Http1Headers(ScxHttpHeaders h) {
-        this.h = ScxHttpHeaders.of(h);
+    public Http1Headers(ScxHttpHeaders oldHeaders) {
+        super(oldHeaders);
     }
 
     public Http1Headers() {
-        this.h = ScxHttpHeaders.of();
+        super();
     }
 
     @Override
     public Http1Headers set(ScxHttpHeaderName name, String... value) {
-        h.set(name, value);
-        return this;
+        return (Http1Headers) super.set(name, value);
     }
 
     @Override
     public Http1Headers add(ScxHttpHeaderName name, String... value) {
-        h.add(name, value);
-        return this;
+        return (Http1Headers) super.add(name, value);
     }
 
     @Override
     public Http1Headers remove(ScxHttpHeaderName name) {
-        h.remove(name);
-        return this;
+        return (Http1Headers) super.remove(name);
     }
 
     @Override
     public Http1Headers clear() {
-        h.clear();
-        return this;
-    }
-
-    @Override
-    public long size() {
-        return h.size();
-    }
-
-    @Override
-    public Set<ScxHttpHeaderName> names() {
-        return h.names();
-    }
-
-    @Override
-    public String get(ScxHttpHeaderName name) {
-        return h.get(name);
-    }
-
-    @Override
-    public List<String> getAll(ScxHttpHeaderName name) {
-        return h.getAll(name);
-    }
-
-    @Override
-    public boolean contains(ScxHttpHeaderName name) {
-        return h.contains(name);
-    }
-
-    @Override
-    public boolean isEmpty() {
-        return h.isEmpty();
-    }
-
-    @Override
-    public Map<ScxHttpHeaderName, List<String>> toMultiValueMap() {
-        return h.toMultiValueMap();
-    }
-
-    @Override
-    public Map<ScxHttpHeaderName, String> toMap() {
-        return h.toMap();
-    }
-
-    @Override
-    public <X extends Throwable> void forEach(Function2Void<? super ScxHttpHeaderName, String, X> action) throws X {
-        h.forEach(action);
-    }
-
-    @Override
-    public <X extends Throwable> void forEachParameter(Function2Void<? super ScxHttpHeaderName, List<String>, X> action) throws X {
-        h.forEachParameter(action);
-    }
-
-    @Override
-    public Iterator<ParameterEntry<ScxHttpHeaderName, String>> iterator() {
-        return h.iterator();
-    }
-
-    @Override
-    public String toString() {
-        return h.toString();
+        return (Http1Headers) super.clear();
     }
 
     public ScxConnection connection() {
