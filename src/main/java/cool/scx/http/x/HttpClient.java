@@ -2,6 +2,7 @@ package cool.scx.http.x;
 
 import cool.scx.http.ScxHttpClient;
 import cool.scx.http.uri.ScxURI;
+import cool.scx.http.version.HttpVersion;
 import cool.scx.http.x.http1.Http1ClientConnection;
 import cool.scx.tcp.ScxTCPSocket;
 import cool.scx.tcp.TCPClient;
@@ -12,6 +13,7 @@ import java.io.IOException;
 import static cool.scx.http.media.empty.EmptyMediaWriter.EMPTY_MEDIA_WRITER;
 import static cool.scx.http.method.HttpMethod.CONNECT;
 import static cool.scx.http.status_code.HttpStatusCode.OK;
+import static cool.scx.http.version.HttpVersion.HTTP_1_1;
 import static cool.scx.http.x.HttpXHelper.*;
 import static cool.scx.http.x.http1.request_line.RequestTargetForm.AUTHORITY_FORM;
 
@@ -52,8 +54,8 @@ public class HttpClient implements ScxHttpClient {
     }
 
     @Override
-    public HttpClientRequest request() {
-        return new HttpClientRequest(this);
+    public HttpClientRequest request(HttpVersion... httpVersions) {
+        return new HttpClientRequest(this, httpVersions);
     }
 
     public HttpClientOptions options() {
@@ -107,7 +109,7 @@ public class HttpClient implements ScxHttpClient {
 
         //2, 和代理服务器 握手
         var proxyResponse = new Http1ClientConnection(tcpSocket, options.http1ClientConnectionOptions()).sendRequest(
-                (HttpClientRequest) new HttpClientRequest(this)
+                (HttpClientRequest) new HttpClientRequest(this, HTTP_1_1)
                     .requestTargetForm(AUTHORITY_FORM)
                     .method(CONNECT)
                     .addHeader("proxy-connection", "keep-alive")
