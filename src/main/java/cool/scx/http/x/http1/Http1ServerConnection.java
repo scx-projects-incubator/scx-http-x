@@ -8,6 +8,7 @@ import cool.scx.http.exception.BadRequestException;
 import cool.scx.http.exception.ContentTooLargeException;
 import cool.scx.http.exception.URITooLongException;
 import cool.scx.http.method.ScxHttpMethod;
+import cool.scx.http.sender.ScxHttpSenderStatus;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.x.http1.body_supplier.AutoContinueByteSupplier;
 import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
@@ -206,10 +207,22 @@ public class Http1ServerConnection {
             return;
         }
 
-        if (request.response().isSent()) {
-            //这里表示 响应对象已经被使用了 我们只能打印日志
-            LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
-            return;
+        switch (request.response().senderStatus()) {
+            case SUCCESS -> {
+                // 这里表示 响应对象已经正确响应了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
+            case SENDING -> {
+                // 这里表示 响应对象已经被部分发送了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被部分相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
+            case FAILED -> {
+                //这里表示 响应对象已经被部分发送失败使用了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求被部分相应失败, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
         }
 
         try {
