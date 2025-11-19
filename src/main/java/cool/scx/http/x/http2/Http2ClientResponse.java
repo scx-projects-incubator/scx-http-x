@@ -4,12 +4,18 @@ import cool.scx.http.ScxHttpClientResponse;
 import cool.scx.http.body.ScxHttpBody;
 import cool.scx.http.headers.ScxHttpHeaders;
 import cool.scx.http.status_code.ScxHttpStatusCode;
+import cool.scx.http.version.HttpVersion;
 
 // todo 待完成
 public class Http2ClientResponse implements ScxHttpClientResponse {
 
     @Override
     public ScxHttpStatusCode statusCode() {
+        return null;
+    }
+
+    @Override
+    public HttpVersion version() {
         return null;
     }
 
