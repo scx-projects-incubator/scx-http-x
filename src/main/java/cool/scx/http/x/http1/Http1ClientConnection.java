@@ -2,6 +2,10 @@ package cool.scx.http.x.http1;
 
 import cool.scx.http.headers.ScxHttpHeaders;
 import cool.scx.http.media.MediaWriter;
+import cool.scx.http.sender.ScxHttpSenderStatus;
+import cool.scx.http.x.HttpClientRequest;
+import cool.scx.http.x.http1.byte_output.ContentLengthByteOutput;
+import cool.scx.http.x.http1.byte_output.Http1ClientRequestByteOutput;
 import cool.scx.http.x.http1.byte_output.HttpChunkedByteOutput;
 import cool.scx.http.x.http1.headers.Http1Headers;
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
@@ -36,7 +40,7 @@ public class Http1ClientConnection {
         this.options = options;
     }
 
-    public Http1ClientConnection sendRequest(Http1ClientRequest request, MediaWriter writer) throws IOException {
+    public Http1ClientConnection sendRequest(HttpClientRequest request, MediaWriter writer) throws IOException {
         // 复制一份头便于修改
         var headers = new Http1Headers(request.headers());
 
@@ -86,6 +90,8 @@ public class Http1ClientConnection {
 
         var requestHeaderStr = headers.encode();
 
+        request.senderStatus = ScxHttpSenderStatus.SENDING;
+
         //先写入头部内容
         var h = requestLineStr + "\r\n" + requestHeaderStr + "\r\n";
         dataWriter.write(h.getBytes(UTF_8));
@@ -94,11 +100,11 @@ public class Http1ClientConnection {
         var useChunkedTransfer = headers.transferEncoding() == CHUNKED;
 
         // 这里需要做一个 close 的中断传递. 防止用户意外关闭底层
-        var baseByteOutput = new NoCloseByteOutput(dataWriter);
+        var baseByteOutput = new Http1ClientRequestByteOutput(dataWriter,request);
 
-        // todo 使用 LengthBoundedOutput 限制 output 写入长度 保证和 contentLength 相同(假设设置了的话).
-
-        var finalByteOutput = useChunkedTransfer ? new HttpChunkedByteOutput(baseByteOutput) : baseByteOutput;
+        var finalByteOutput = useChunkedTransfer ?
+            new HttpChunkedByteOutput(baseByteOutput) :
+            new ContentLengthByteOutput(baseByteOutput, expectedLength);
 
         // 调用处理器
         writer.write(finalByteOutput);
