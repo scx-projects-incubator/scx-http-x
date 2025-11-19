@@ -162,7 +162,7 @@ public class Http1ServerResponse implements ScxHttpServerResponse {
         var statusLineStr = statusLine.encode();
 
         // 处理头相关
-        // 1, 处理 连接相关
+        // 1, 处理 连接 相关
         if (headers.connection() == null) {
             if (request.isKeepAlive()) {
                 // 正常我们可以忽略设置 KEEP_ALIVE, 但是这里我们显式设置
