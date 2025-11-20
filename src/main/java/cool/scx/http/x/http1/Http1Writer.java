@@ -35,6 +35,7 @@ public final class Http1Writer {
         // 1, 创建 响应行
         var statusLine = new Http1StatusLine(httpVersion, statusCode, reasonPhrase);
 
+        // 编码
         var statusLineStr = statusLine.encode();
 
         // 处理头相关
