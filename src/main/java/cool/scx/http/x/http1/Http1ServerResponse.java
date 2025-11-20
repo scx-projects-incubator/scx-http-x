@@ -147,7 +147,7 @@ public class Http1ServerResponse implements ScxHttpServerResponse {
     }
 
     /// 内部方法 只应该由 Http1Writer 调用
-    void _setSenderStatus(ScxHttpSenderStatus senderStatus){
+    void _setSenderStatus(ScxHttpSenderStatus senderStatus) {
         this.senderStatus = senderStatus;
     }
 
