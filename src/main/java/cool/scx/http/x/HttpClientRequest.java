@@ -17,9 +17,10 @@ import cool.scx.http.x.http1.Http1ClientRequest;
 import cool.scx.http.x.http1.request_line.RequestTargetForm;
 import cool.scx.http.x.http2.Http2ClientConnection;
 import cool.scx.http.x.http2.Http2ClientRequest;
-import cool.scx.tcp.ScxTCPSocket;
 
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.net.Socket;
 import java.util.concurrent.locks.ReentrantLock;
 
 import static cool.scx.http.method.HttpMethod.GET;
@@ -38,13 +39,13 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
     private final HttpClient httpClient;
     private final HttpClientOptions options;
     private final ReentrantLock sendLock;
+    public ScxHttpSenderStatus senderStatus;
 
     protected HttpVersion[] httpVersions;
     protected ScxHttpMethod method;
     protected ScxURIWritable uri;
     protected ScxHttpHeadersWritable headers;
     protected RequestTargetForm requestTargetForm;
-    public ScxHttpSenderStatus senderStatus;
 
     public HttpClientRequest(HttpClient httpClient, HttpVersion... httpVersions) {
         this.httpClient = httpClient;
@@ -65,7 +66,7 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
             throw new IllegalSenderStateException(senderStatus);
         }
 
-        ScxTCPSocket tcpSocket;
+        Socket tcpSocket;
 
         try {
             tcpSocket = httpClient.createTCPSocket(uri, getApplicationProtocols());
@@ -75,16 +76,16 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
 
         var useHttp2 = false;
 
-        if (tcpSocket.isTLS()) {
-            var applicationProtocol = tcpSocket.tlsManager().getApplicationProtocol();
+        if (tcpSocket instanceof SSLSocket sslSocket) {
+            var applicationProtocol = sslSocket.getApplicationProtocol();
             useHttp2 = "h2".equals(applicationProtocol);
         }
 
         if (useHttp2) {
             return new Http2ClientConnection(tcpSocket, options.http2ClientConnectionOptions()).sendRequest(this, mediaWriter).waitResponse();
         } else {
-            //仅当 http 协议并且开启代理的时候才使用 绝对路径
-            if (!tcpSocket.isTLS() && options.proxy() != null) {
+            // 仅当 http 协议 (不是 SSL) 并且开启代理的时候才使用 绝对路径
+            if (!(tcpSocket instanceof SSLSocket) && options.proxy() != null) {
                 this.requestTargetForm = ABSOLUTE_FORM;
             }
             try {
