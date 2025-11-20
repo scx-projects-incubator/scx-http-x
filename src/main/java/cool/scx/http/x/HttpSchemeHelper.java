@@ -1,16 +1,14 @@
 package cool.scx.http.x;
 
 import cool.scx.http.uri.ScxURI;
-import cool.scx.tcp.ScxTCPSocket;
 
-import java.io.IOException;
 import java.net.InetSocketAddress;
 
-/// HttpXHelper (内部工具类)
+/// HttpSchemeHelper (内部工具类)
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class HttpXHelper {
+public final class HttpSchemeHelper {
 
     public static boolean checkIsTLS(ScxURI uri) {
         var scheme = uri.scheme().toLowerCase();
@@ -37,14 +35,6 @@ public final class HttpXHelper {
             case "https", "wss" -> 443;
             default -> throw new IllegalArgumentException("Unsupported scheme: " + scheme);
         };
-    }
-
-    public static void tryCloseSocket(ScxTCPSocket tcpSocket, Exception e) {
-        try {
-            tcpSocket.close();
-        } catch (IOException ex) {
-            e.addSuppressed(ex);
-        }
     }
 
 }

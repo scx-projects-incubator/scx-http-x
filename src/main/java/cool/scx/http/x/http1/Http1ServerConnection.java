@@ -17,10 +17,10 @@ import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import cool.scx.io.*;
 import cool.scx.io.exception.AlreadyClosedException;
 import cool.scx.io.exception.ScxIOException;
-import cool.scx.tcp.ScxTCPSocket;
 
 import java.io.IOException;
 import java.lang.System.Logger;
+import java.net.Socket;
 
 import static cool.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
 import static cool.scx.http.error_handler.ErrorPhase.SYSTEM;
@@ -43,7 +43,7 @@ public class Http1ServerConnection {
 
     private final static Logger LOGGER = getLogger(Http1ServerConnection.class.getName());
 
-    public final ScxTCPSocket tcpSocket;
+    public final Socket tcpSocket;
     public final ByteInput dataReader;
     public final ByteOutput dataWriter;
 
@@ -52,10 +52,10 @@ public class Http1ServerConnection {
     private final ScxHttpServerErrorHandler errorHandler;
     private boolean running;
 
-    public Http1ServerConnection(ScxTCPSocket tcpSocket, Http1ServerConnectionOptions options, Function1Void<ScxHttpServerRequest, ?> requestHandler, ScxHttpServerErrorHandler errorHandler) {
+    public Http1ServerConnection(Socket tcpSocket, Http1ServerConnectionOptions options, Function1Void<ScxHttpServerRequest, ?> requestHandler, ScxHttpServerErrorHandler errorHandler) throws IOException {
         this.tcpSocket = tcpSocket;
-        this.dataReader = ScxIO.createByteInput(this.tcpSocket.inputStream());
-        this.dataWriter = ScxIO.createByteOutput(this.tcpSocket.outputStream());
+        this.dataReader = ScxIO.createByteInput(this.tcpSocket.getInputStream());
+        this.dataWriter = ScxIO.createByteOutput(this.tcpSocket.getOutputStream());
         this.options = options;
         this.requestHandler = requestHandler;
         this.errorHandler = errorHandler;
@@ -206,10 +206,23 @@ public class Http1ServerConnection {
             return;
         }
 
-        if (request.response().isSent()) {
-            //这里表示 响应对象已经被使用了 我们只能打印日志
-            LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
-            return;
+        // todo 这里有问题 是不是应该 关闭 连接?
+        switch (request.response().senderStatus()) {
+            case SUCCESS -> {
+                // 这里表示 响应对象已经正确响应了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
+            case SENDING -> {
+                // 这里表示 响应对象已经被部分发送了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被部分相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
+            case FAILED -> {
+                //这里表示 响应对象已经被部分发送失败使用了 我们只能打印日志
+                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求被部分相应失败, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                return;
+            }
         }
 
         try {

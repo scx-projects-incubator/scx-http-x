@@ -1,5 +1,6 @@
 package cool.scx.http.x.http1.byte_output;
 
+import cool.scx.function.Function0Void;
 import cool.scx.http.x.http1.Http1ServerConnection;
 import cool.scx.io.ByteChunk;
 import cool.scx.io.ByteOutput;
@@ -16,11 +17,13 @@ public class Http1ServerResponseByteOutput implements ByteOutput {
 
     private final Http1ServerConnection connection;
     private final boolean closeConnection;
+    private final Function0Void<RuntimeException> onClose;
     private boolean closed;
 
-    public Http1ServerResponseByteOutput(Http1ServerConnection connection, boolean closeConnection) {
+    public Http1ServerResponseByteOutput(Http1ServerConnection connection, boolean closeConnection, Function0Void<RuntimeException> onClose) {
         this.connection = connection;
         this.closeConnection = closeConnection;
+        this.onClose = onClose;
         this.closed = false;
     }
 
@@ -57,7 +60,6 @@ public class Http1ServerResponseByteOutput implements ByteOutput {
     public void close() throws ScxIOException, AlreadyClosedException {
         ensureOpen();
 
-        closed = true;
         // 只有明确表示 close 的时候我们才真正关闭底层
         if (closeConnection) {
             try {
@@ -69,6 +71,9 @@ public class Http1ServerResponseByteOutput implements ByteOutput {
             // 否则只是刷新
             connection.dataWriter.flush();
         }
+
+        closed = true;
+        onClose.apply();
 
     }
 
