@@ -9,7 +9,7 @@ import java.net.URI;
 
 import static cool.scx.http.method.HttpMethod.CONNECT;
 import static cool.scx.http.version.HttpVersion.HTTP_1_1;
-import static cool.scx.http.x.HttpXHelper.getDefaultPort;
+import static cool.scx.http.x.HttpSchemeHelper.getDefaultPort;
 
 /// Http1RequestLineHelper
 ///

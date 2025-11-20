@@ -17,8 +17,8 @@ import static cool.scx.http.media.empty.EmptyMediaWriter.EMPTY_MEDIA_WRITER;
 import static cool.scx.http.method.HttpMethod.CONNECT;
 import static cool.scx.http.status_code.HttpStatusCode.OK;
 import static cool.scx.http.version.HttpVersion.HTTP_1_1;
-import static cool.scx.http.x.HttpXHelper.checkIsTLS;
-import static cool.scx.http.x.HttpXHelper.getRemoteAddress;
+import static cool.scx.http.x.HttpSchemeHelper.checkIsTLS;
+import static cool.scx.http.x.HttpSchemeHelper.getRemoteAddress;
 import static cool.scx.http.x.http1.request_line.RequestTargetForm.AUTHORITY_FORM;
 
 /// HttpClient
