@@ -151,6 +151,7 @@ public final class Http1Writer {
 
         var requestHeaderStr = headers.encode();
 
+        // 标记发送中
         request.senderStatus = ScxHttpSenderStatus.SENDING;
 
         // 构建头部内容字节
