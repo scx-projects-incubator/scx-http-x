@@ -206,6 +206,7 @@ public class Http1ServerConnection {
             return;
         }
 
+        // todo 这里有问题 是不是应该 关闭 连接?
         switch (request.response().senderStatus()) {
             case SUCCESS -> {
                 // 这里表示 响应对象已经正确响应了 我们只能打印日志
