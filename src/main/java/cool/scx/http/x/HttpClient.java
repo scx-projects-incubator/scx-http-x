@@ -4,17 +4,21 @@ import cool.scx.http.ScxHttpClient;
 import cool.scx.http.uri.ScxURI;
 import cool.scx.http.version.HttpVersion;
 import cool.scx.http.x.http1.Http1ClientConnection;
-import cool.scx.tcp.ScxTCPSocket;
 import cool.scx.tcp.TCPClient;
 import cool.scx.tcp.tls.TLS;
 
+import javax.net.ssl.SNIHostName;
+import javax.net.ssl.SSLSocket;
 import java.io.IOException;
+import java.net.Socket;
+import java.util.List;
 
 import static cool.scx.http.media.empty.EmptyMediaWriter.EMPTY_MEDIA_WRITER;
 import static cool.scx.http.method.HttpMethod.CONNECT;
 import static cool.scx.http.status_code.HttpStatusCode.OK;
 import static cool.scx.http.version.HttpVersion.HTTP_1_1;
-import static cool.scx.http.x.HttpXHelper.*;
+import static cool.scx.http.x.HttpXHelper.checkIsTLS;
+import static cool.scx.http.x.HttpXHelper.getRemoteAddress;
 import static cool.scx.http.x.http1.request_line.RequestTargetForm.AUTHORITY_FORM;
 
 /// HttpClient
@@ -33,24 +37,44 @@ public class HttpClient implements ScxHttpClient {
         this(new HttpClientOptions());
     }
 
-    private static ScxTCPSocket configTLS(ScxTCPSocket tcpSocket, TLS tls, ScxURI uri, String... applicationProtocols) throws IOException {
-        // 手动升级
+    private static SSLSocket configTLS(Socket tcpSocket, TLS tls, ScxURI uri, String... applicationProtocols) throws IOException {
+        SSLSocket sslSocket;
+        // 1, 手动升级
         try {
-            tcpSocket.upgradeToTLS(tls);
+            sslSocket = tls.upgradeToTLS(tcpSocket);
         } catch (IOException e) {
-            tryCloseSocket(tcpSocket, e);
+            try {
+                tcpSocket.close();
+            } catch (IOException ex) {
+                e.addSuppressed(ex);
+            }
             throw new IOException("升级到 TLS 时发生错误 !!!", e);
         }
-        tcpSocket.tlsManager().setUseClientMode(true);
-        tcpSocket.tlsManager().setApplicationProtocols(applicationProtocols);
-        tcpSocket.tlsManager().setServerNames(uri.host());
+
+        // 2, 配置 参数
+        sslSocket.setUseClientMode(true);
+
+        var sslParameters = sslSocket.getSSLParameters();
+
+        sslParameters.setApplicationProtocols(applicationProtocols);
+        sslParameters.setServerNames(List.of(new SNIHostName(uri.host())));
+
+        // 别忘了写回 参数
+        sslSocket.setSSLParameters(sslParameters);
+
+        // 3, 开始握手
         try {
-            tcpSocket.startHandshake();
+            sslSocket.startHandshake();
         } catch (IOException e) {
-            tryCloseSocket(tcpSocket, e);
+            try {
+                tcpSocket.close();
+            } catch (IOException ex) {
+                e.addSuppressed(ex);
+            }
             throw new IOException("处理 TLS 握手 时发生错误 !!!", e);
         }
-        return tcpSocket;
+
+        return sslSocket;
     }
 
     @Override
@@ -64,29 +88,33 @@ public class HttpClient implements ScxHttpClient {
 
     // 创建一个 TCP 连接
     // todo 后期可以创建一个 连接池 用来复用 未断开的 tcp 连接
-    public ScxTCPSocket createTCPSocket(ScxURI uri, String... applicationProtocols) throws IOException {
+    public Socket createTCPSocket(ScxURI uri, String... applicationProtocols) throws IOException {
         //判断是否 tls
         var isTLS = checkIsTLS(uri);
         //判断是否使用代理
         var withProxy = options.proxy() != null;
 
         if (isTLS) {
-            return withProxy ? createTLSTCPSocketWithProxy(uri, applicationProtocols) : createTLSTCPSocket(uri, applicationProtocols);
+            return withProxy ?
+                createTLSTCPSocketWithProxy(uri, applicationProtocols) :
+                createTLSTCPSocket(uri, applicationProtocols);
         } else {
-            return withProxy ? createPlainTCPSocketWithProxy() : createPlainTCPSocket(uri);
+            return withProxy ?
+                createPlainTCPSocketWithProxy() :
+                createPlainTCPSocket(uri);
         }
 
     }
 
     /// 创建 明文 socket
-    public ScxTCPSocket createPlainTCPSocket(ScxURI uri) throws IOException {
+    public Socket createPlainTCPSocket(ScxURI uri) throws IOException {
         var tcpClient = new TCPClient();
         var remoteAddress = getRemoteAddress(uri);
         return tcpClient.connect(remoteAddress, options.timeout());
     }
 
     /// 创建 tls socket
-    public ScxTCPSocket createTLSTCPSocket(ScxURI uri, String... applicationProtocols) throws IOException {
+    public Socket createTLSTCPSocket(ScxURI uri, String... applicationProtocols) throws IOException {
         var tcpClient = new TCPClient();
         var remoteAddress = getRemoteAddress(uri);
         var tcpSocket = tcpClient.connect(remoteAddress, options.timeout());
@@ -95,7 +123,7 @@ public class HttpClient implements ScxHttpClient {
     }
 
     /// 创建 具有代理 的 明文 socket
-    public ScxTCPSocket createPlainTCPSocketWithProxy() throws IOException {
+    public Socket createPlainTCPSocketWithProxy() throws IOException {
         var tcpClient = new TCPClient();
         //我们连接代理地址
         var remoteAddress = options.proxy().proxyAddress();
@@ -103,7 +131,7 @@ public class HttpClient implements ScxHttpClient {
     }
 
     /// 创建 具有代理 的 tls socket
-    public ScxTCPSocket createTLSTCPSocketWithProxy(ScxURI uri, String... applicationProtocols) throws IOException {
+    public Socket createTLSTCPSocketWithProxy(ScxURI uri, String... applicationProtocols) throws IOException {
         //1, 我们明文连接代理地址
         var tcpSocket = createPlainTCPSocketWithProxy();
 
