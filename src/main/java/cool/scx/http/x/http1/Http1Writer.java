@@ -166,9 +166,11 @@ public final class Http1Writer {
         // 创建 基本 输出流
         var baseByteOutput = new Http1ClientRequestByteOutput(connection.dataWriter, () -> request.senderStatus = ScxHttpSenderStatus.SUCCESS);
 
+        // 判断是否采用分块传输
         return useChunkedTransfer ?
             new HttpChunkedByteOutput(baseByteOutput) :
             new ContentLengthByteOutput(baseByteOutput, expectedLength);
+
     }
 
 }
