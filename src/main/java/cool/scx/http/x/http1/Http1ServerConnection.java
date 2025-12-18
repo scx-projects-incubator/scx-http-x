@@ -26,9 +26,9 @@ import java.lang.System.Logger;
 import java.net.Socket;
 
 import static dev.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
+import static dev.scx.http.error_handler.ErrorHandlerHelper.getErrorPhaseString;
 import static dev.scx.http.error_handler.ErrorPhase.SYSTEM;
 import static dev.scx.http.error_handler.ErrorPhase.USER;
-import static dev.scx.http.error_handler.ErrorPhaseHelper.getErrorPhaseStr;
 import static cool.scx.http.x.http1.Http1Helper.*;
 import static cool.scx.http.x.http1.Http1Reader.*;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
@@ -206,7 +206,7 @@ public class Http1ServerConnection {
     private void handlerException(Throwable e, ScxHttpServerRequest request, ErrorPhase errorPhase) {
 
         if (tcpSocket.isClosed()) {
-            LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为 Socket 已被关闭, 所以错误信息可能没有正确返回给客户端 !!!", e);
+            LOGGER.log(ERROR, getErrorPhaseString(errorPhase) + " 发生异常 !!!, 因为 Socket 已被关闭, 所以错误信息可能没有正确返回给客户端 !!!", e);
             return;
         }
 
@@ -214,17 +214,17 @@ public class Http1ServerConnection {
         switch (request.response().senderStatus()) {
             case SUCCESS -> {
                 // 这里表示 响应对象已经正确响应了 我们只能打印日志
-                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                LOGGER.log(ERROR, getErrorPhaseString(errorPhase) + " 发生异常 !!!, 因为请求已被相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
                 return;
             }
             case SENDING -> {
                 // 这里表示 响应对象已经被部分发送了 我们只能打印日志
-                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求已被部分相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                LOGGER.log(ERROR, getErrorPhaseString(errorPhase) + " 发生异常 !!!, 因为请求已被部分相应, 所以错误信息可能没有正确返回给客户端 !!!", e);
                 return;
             }
             case FAILED -> {
                 //这里表示 响应对象已经被部分发送失败使用了 我们只能打印日志
-                LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 因为请求被部分相应失败, 所以错误信息可能没有正确返回给客户端 !!!", e);
+                LOGGER.log(ERROR, getErrorPhaseString(errorPhase) + " 发生异常 !!!, 因为请求被部分相应失败, 所以错误信息可能没有正确返回给客户端 !!!", e);
                 return;
             }
         }
@@ -238,7 +238,7 @@ public class Http1ServerConnection {
             }
         } catch (Exception ex) {
             e.addSuppressed(ex);
-            LOGGER.log(ERROR, getErrorPhaseStr(errorPhase) + " 发生异常 !!!, 尝试通过 错误处理器 响应给客户端时发生异常 !!!", e);
+            LOGGER.log(ERROR, getErrorPhaseString(errorPhase) + " 发生异常 !!!, 尝试通过 错误处理器 响应给客户端时发生异常 !!!", e);
         }
 
     }
