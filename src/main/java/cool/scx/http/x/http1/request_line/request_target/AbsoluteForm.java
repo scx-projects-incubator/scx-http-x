@@ -1,5 +1,7 @@
 package cool.scx.http.x.http1.request_line.request_target;
 
+import dev.scx.http.uri.ScxURI;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -37,6 +39,17 @@ public record AbsoluteForm(String scheme, String host, Integer port,
             query,
             fragment
         );
+    }
+
+    @Override
+    public ScxURI toScxURI() {
+        return ScxURI.of()
+            .scheme(scheme)
+            .host(host)
+            .port(port)
+            .path(path)
+            .query(query)
+            .fragment(fragment);
     }
 
 }

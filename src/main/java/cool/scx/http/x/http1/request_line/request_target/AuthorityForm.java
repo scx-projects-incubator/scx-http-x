@@ -1,5 +1,7 @@
 package cool.scx.http.x.http1.request_line.request_target;
 
+import dev.scx.http.uri.ScxURI;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -44,6 +46,13 @@ public record AuthorityForm(String host, int port) implements RequestTarget {
         }
 
         return new AuthorityForm(u.getHost(), u.getPort());
+    }
+
+    @Override
+    public ScxURI toScxURI() {
+        return ScxURI.of()
+            .host(host)
+            .port(port);
     }
 
 }

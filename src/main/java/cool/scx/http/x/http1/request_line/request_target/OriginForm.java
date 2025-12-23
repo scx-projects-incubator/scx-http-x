@@ -1,5 +1,7 @@
 package cool.scx.http.x.http1.request_line.request_target;
 
+import dev.scx.http.uri.ScxURI;
+
 import java.net.URI;
 import java.net.URISyntaxException;
 
@@ -19,6 +21,14 @@ public record OriginForm(String path, String query, String fragment) implements 
         var fragment = u.getFragment();
 
         return new OriginForm(path, query, fragment);
+    }
+
+    @Override
+    public ScxURI toScxURI() {
+        return ScxURI.of()
+            .path(path)
+            .query(query)
+            .fragment(fragment);
     }
 
 }
