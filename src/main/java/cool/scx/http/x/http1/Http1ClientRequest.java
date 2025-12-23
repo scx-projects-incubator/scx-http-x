@@ -10,11 +10,10 @@ import cool.scx.http.x.http1.request_line.RequestTargetForm;
 /// @version 0.0.1
 public interface Http1ClientRequest extends ScxHttpClientRequest {
 
-    RequestTargetForm requestTargetForm();
+    /// 内部方法 只应该由 框架 调用
+    boolean _useProxy();
 
-    Http1ClientRequest requestTargetForm(RequestTargetForm requestTargetForm);
-
-    /// 内部方法 只应该由 Http1Writer 调用
+    /// 内部方法 只应该由 框架 调用
     void _setSenderStatus(ScxHttpSenderStatus senderStatus);
 
 }

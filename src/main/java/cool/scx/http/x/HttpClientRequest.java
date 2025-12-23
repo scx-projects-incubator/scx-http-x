@@ -1,5 +1,9 @@
 package cool.scx.http.x;
 
+import cool.scx.http.x.http1.Http1ClientConnection;
+import cool.scx.http.x.http1.Http1ClientRequest;
+import cool.scx.http.x.http2.Http2ClientConnection;
+import cool.scx.http.x.http2.Http2ClientRequest;
 import dev.scx.http.ScxHttpClientRequest;
 import dev.scx.http.ScxHttpClientResponse;
 import dev.scx.http.headers.ScxHttpHeaders;
@@ -12,11 +16,6 @@ import dev.scx.http.sender.ScxHttpSenderStatus;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.uri.ScxURIWritable;
 import dev.scx.http.version.HttpVersion;
-import cool.scx.http.x.http1.Http1ClientConnection;
-import cool.scx.http.x.http1.Http1ClientRequest;
-import cool.scx.http.x.http1.request_line.RequestTargetForm;
-import cool.scx.http.x.http2.Http2ClientConnection;
-import cool.scx.http.x.http2.Http2ClientRequest;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;
@@ -27,8 +26,6 @@ import static dev.scx.http.method.HttpMethod.GET;
 import static dev.scx.http.sender.ScxHttpSenderStatus.NOT_SENT;
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 import static dev.scx.http.version.HttpVersion.HTTP_2;
-import static cool.scx.http.x.http1.request_line.RequestTargetForm.ABSOLUTE_FORM;
-import static cool.scx.http.x.http1.request_line.RequestTargetForm.ORIGIN_FORM;
 
 /// 支持动态 选择协议的 Request.
 ///
@@ -43,7 +40,7 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
     private ScxHttpMethod method;
     private ScxURIWritable uri;
     private ScxHttpHeadersWritable headers;
-    private RequestTargetForm requestTargetForm;
+    private boolean useProxy;
     private ScxHttpSenderStatus senderStatus;
 
     public HttpClientRequest(HttpClient httpClient, HttpVersion... httpVersions) {
@@ -54,7 +51,7 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
         this.method = GET;
         this.uri = ScxURI.of();
         this.headers = ScxHttpHeaders.of();
-        this.requestTargetForm = ORIGIN_FORM;
+        this.useProxy = false;
         this.senderStatus = ScxHttpSenderStatus.NOT_SENT;
     }
 
@@ -85,7 +82,7 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
         } else {
             // 仅当 http 协议 (不是 SSL) 并且开启代理的时候才使用 绝对路径
             if (!(tcpSocket instanceof SSLSocket) && options.proxy() != null) {
-                this.requestTargetForm = ABSOLUTE_FORM;
+                this.useProxy = true;
             }
             try {
                 return new Http1ClientConnection(tcpSocket, options.http1ClientConnectionOptions()).sendRequest(this, mediaWriter).waitResponse();
@@ -153,14 +150,8 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
     }
 
     @Override
-    public RequestTargetForm requestTargetForm() {
-        return requestTargetForm;
-    }
-
-    @Override
-    public HttpClientRequest requestTargetForm(RequestTargetForm requestTargetForm) {
-        this.requestTargetForm = requestTargetForm;
-        return this;
+    public boolean _useProxy() {
+        return useProxy;
     }
 
     @Override
