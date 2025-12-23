@@ -132,8 +132,7 @@ public final class Http1Writer {
             // 如果用户已经手动设置了 Content-Length, 我们便不再设置 分块传输
             if (headers.contentLength() == null) {
                 headers.transferEncoding(CHUNKED);
-            }
-            else {
+            } else {
                 // 否则使用用户已经设置的 contentLength
                 expectedLength = headers.contentLength();
             }
