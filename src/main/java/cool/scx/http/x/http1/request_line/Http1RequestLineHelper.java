@@ -86,23 +86,38 @@ public final class Http1RequestLineHelper {
         // 校验 method 和 requestTarget 的组合是否成立或者内容是否正确.
 
         // 1, CONNECT 和 AuthorityForm 是一个组合 二者必须同时存在.
-        if (method == CONNECT && !(requestTarget instanceof AuthorityForm)) {
-            throw new IllegalArgumentException("");
-        }
-        if (requestTarget instanceof AuthorityForm authorityForm && method != CONNECT) {
-            throw new IllegalArgumentException("");
-        }
-        // 2, AsteriskForm 只有在 OPTIONS 时才允许.
-        if (requestTarget instanceof AsteriskForm asteriskForm && method != OPTIONS) {
-            throw new IllegalArgumentException("");
-        }
-        // 3, OriginForm 必须以 "/" 起始
-        if (requestTarget instanceof OriginForm originForm && !originForm.path().startsWith("/")) {
-            throw new IllegalArgumentException("");
-        }
-        // 4, AbsoluteForm 的 scheme 和 host 必须存在.
-        if (requestTarget instanceof AbsoluteForm absoluteForm && (absoluteForm.scheme() == null || absoluteForm.host() == null)) {
-            throw new IllegalArgumentException("");
+        if (method == CONNECT) {
+            if (!(requestTarget instanceof AuthorityForm)) {
+                throw new IllegalArgumentException("CONNECT must use AuthorityForm");
+            }
+        } else {
+            switch (requestTarget) {
+                // 这里 method 肯定不是 CONNECT, 直接抛异常.
+                case AuthorityForm authorityForm -> {
+                    throw new IllegalArgumentException("AuthorityForm only allowed with CONNECT");
+                }
+                // 2, AsteriskForm 只有在 OPTIONS 时才允许.
+                case AsteriskForm asteriskForm -> {
+                    if (method != OPTIONS) {
+                        throw new IllegalArgumentException("AsteriskForm only allowed with OPTIONS");
+                    }
+                }
+                // 3, OriginForm 必须以 "/" 起始
+                case OriginForm originForm -> {
+                    var path = originForm.path();
+                    if (!path.startsWith("/")) {
+                        throw new IllegalArgumentException("OriginForm path must start with \"/\"");
+                    }
+                }
+                // 4, AbsoluteForm 的 scheme 和 host 必须存在.
+                case AbsoluteForm absoluteForm -> {
+                    var scheme = absoluteForm.scheme();
+                    var host = absoluteForm.host();
+                    if (scheme == null || host == null) {
+                        throw new IllegalArgumentException("AbsoluteForm must have scheme and host");
+                    }
+                }
+            }
         }
 
         var methodStr = method.value();
