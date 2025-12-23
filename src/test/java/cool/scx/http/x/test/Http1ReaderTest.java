@@ -12,7 +12,6 @@ import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
 import cool.scx.http.x.http1.exception.InvalidHttpRequestLineException;
 import cool.scx.http.x.http1.exception.RequestHeaderFieldsTooLargeException;
 import cool.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.request_line.RequestTargetForm;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.NoMoreDataException;
 import dev.scx.io.exception.ScxIOException;
@@ -90,7 +89,7 @@ public class Http1ReaderTest {
         // 测试正常解析
         var rawInput = createByteInput("GET http://www.abc.com/hello HTTP/1.1\r\n".getBytes());
         var http1RequestLine = Http1Reader.readRequestLine(rawInput, 9999);
-        Assert.assertEquals(http1RequestLine.encode(RequestTargetForm.ABSOLUTE_FORM), "GET http://www.abc.com/hello HTTP/1.1");
+        Assert.assertEquals(http1RequestLine.encode(), "GET http://www.abc.com/hello HTTP/1.1");
     }
 
     @Test
@@ -98,7 +97,7 @@ public class Http1ReaderTest {
         // 测试正常解析
         var rawInput = createByteInput("GET http://www.abc.com:9989/hello HTTP/1.1\r\n".getBytes());
         var http1RequestLine = Http1Reader.readRequestLine(rawInput, 9999);
-        Assert.assertEquals(http1RequestLine.encode(RequestTargetForm.ABSOLUTE_FORM), "GET http://www.abc.com:9989/hello HTTP/1.1");
+        Assert.assertEquals(http1RequestLine.encode(), "GET http://www.abc.com:9989/hello HTTP/1.1");
     }
 
     @Test
