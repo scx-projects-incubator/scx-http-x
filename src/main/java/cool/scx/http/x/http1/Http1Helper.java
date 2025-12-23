@@ -1,30 +1,27 @@
 package cool.scx.http.x.http1;
 
+import cool.scx.http.x.http1.headers.Http1Headers;
+import cool.scx.http.x.http1.headers.upgrade.ScxUpgrade;
+import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.exception.BadRequestException;
-import dev.scx.http.headers.ScxHttpHeaders;
 import dev.scx.http.headers.ScxHttpHeadersWritable;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.peer_info.PeerInfo;
 import dev.scx.http.peer_info.PeerInfoWritable;
 import dev.scx.http.status_code.ScxHttpStatusCode;
-import dev.scx.http.uri.ScxURI;
-import cool.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.headers.upgrade.ScxUpgrade;
-import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
-import javax.net.ssl.SSLSocket;
 import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
+import static cool.scx.http.x.http1.headers.connection.Connection.UPGRADE;
 import static dev.scx.http.headers.HttpHeaderName.HOST;
 import static dev.scx.http.method.HttpMethod.GET;
 import static dev.scx.http.status_code.HttpStatusCode.*;
-import static cool.scx.http.x.http1.headers.connection.Connection.UPGRADE;
 
 /// Http1Helper
 ///
@@ -82,31 +79,6 @@ public final class Http1Helper {
     /// 检查请求是否 存在请求体
     public static boolean checkRequestHasBody(ScxHttpMethod method) {
         return GET != method;
-    }
-
-    /// 推断 URI, 事实上我们无法拿到真正的地址 所以这里只是推测而已.
-    public static ScxURI inferURI(ScxURI requestLineTarget, ScxHttpHeaders headers, Socket tcpSocket) {
-        var uri = ScxURI.of(requestLineTarget);
-        // 1, 有可能已经是全路径 我们判断一下是否存在协议
-        if (uri.scheme() != null) {
-            return uri;
-        }
-        // 2, 推测协议
-        if (tcpSocket instanceof SSLSocket) {
-            uri.scheme("https");
-        } else {
-            uri.scheme("http");
-        }
-        // 3, 开始推测 host 和端口号
-        var host = headers.get(HOST);
-        if (host != null) {
-            var authority = ScxURI.ofAuthority(host);
-            uri.host(authority.host()).port(authority.port());
-        } else {
-            var localAddress = (InetSocketAddress) tcpSocket.getLocalSocketAddress();
-            uri.host(localAddress.getHostString()).port(localAddress.getPort());
-        }
-        return uri;
     }
 
     public static PeerInfoWritable getRemotePeer(Socket tcpSocket) {
