@@ -1,4 +1,4 @@
-package cool.scx.http.x.test.c;
+package cool.scx.http.x.test;
 
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import cool.scx.http.x.http1.request_line.InvalidRequestLineException;
@@ -11,7 +11,7 @@ import org.testng.annotations.Test;
 
 import static org.testng.Assert.*;
 
-public class Http1RequestLineTest {
+public class Http1RequestLineParseTest {
 
     public static void main(String[] args) throws Exception {
         testOriginForm();
