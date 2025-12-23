@@ -11,41 +11,35 @@ import java.net.URISyntaxException;
 public record AuthorityForm(String host, int port) implements RequestTarget {
 
     public static AuthorityForm of(String authority) throws URISyntaxException {
-        // 我们借用 URI 来作为 解析器
-        var u = new URI("scx://" + authority);
+        var colon = authority.lastIndexOf(":");
+        if (colon == -1) {
+            throw new URISyntaxException(authority, "Invalid authority");
+        }
+        var hostStr = authority.substring(0, colon);
+        var portStr = authority.substring(colon + 1);
 
-        var host = u.getHost();
-        var port = u.getPort();
-        var rawPath = u.getRawPath();
-        var rawQuery = u.getRawQuery();
-        var rawFragment = u.getRawFragment();
-        var rawUserInfo = u.getRawUserInfo();
+        String host;
+        int port;
 
-        if (host == null || host.isEmpty()) {
-            throw new URISyntaxException(authority, "Invalid authority: host is missing");
+        // 我们需要校验 portStr 必须存在 + 是一个数组 + 范围在 1 - 65535 中
+        if (portStr.isEmpty()) {
+            throw new URISyntaxException(authority, "port is missing");
+        }
+        try {
+            port = Integer.parseInt(portStr);
+            if (port < 1 || port > 65535) {
+                throw new URISyntaxException(authority, "Invalid port");
+            }
+        } catch (NumberFormatException e) {
+            throw new URISyntaxException(authority, "Invalid port");
         }
 
-        if (port <= 0 || port > 65535) {
-            throw new URISyntaxException(authority, "Invalid authority: port is missing or invalid");
+        // 我们需要校验 host 是一个合法的 host
+        if (hostStr.isEmpty()) {
+            throw new URISyntaxException(authority, "Host is missing");
         }
 
-        if (!"".equals(rawPath)) {
-            throw new URISyntaxException(authority, "Invalid authority: path not allowed");
-        }
-
-        if (rawQuery != null) {
-            throw new URISyntaxException(authority, "Invalid authority: query not allowed");
-        }
-
-        if (rawFragment != null) {
-            throw new URISyntaxException(authority, "Invalid authority: fragment not allowed");
-        }
-
-        if (rawUserInfo != null) {
-            throw new URISyntaxException(authority, "Invalid authority: user-info not allowed");
-        }
-
-        return new AuthorityForm(u.getHost(), u.getPort());
+        return new AuthorityForm(host, port);
     }
 
     @Override
