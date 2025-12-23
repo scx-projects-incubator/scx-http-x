@@ -33,4 +33,9 @@ public record OriginForm(String path, String query, String fragment) implements 
             .fragment(fragment);
     }
 
+    @Override
+    public String encode() {
+        return toScxURI().encode(true);
+    }
+
 }

@@ -6,4 +6,6 @@ public sealed interface RequestTarget permits AbsoluteForm, AsteriskForm, Author
 
     ScxURI toScxURI();
 
+    String encode();
+
 }

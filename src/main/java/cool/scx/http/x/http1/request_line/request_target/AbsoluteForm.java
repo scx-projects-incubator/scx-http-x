@@ -55,4 +55,9 @@ public record AbsoluteForm(String scheme, String host, Integer port,
             .fragment(fragment);
     }
 
+    @Override
+    public String encode() {
+        return toScxURI().encode(true);
+    }
+
 }

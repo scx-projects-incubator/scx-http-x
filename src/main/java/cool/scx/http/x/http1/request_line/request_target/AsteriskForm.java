@@ -22,4 +22,9 @@ public final class AsteriskForm implements RequestTarget {
         return ScxURI.of();
     }
 
+    @Override
+    public String encode() {
+        return "*";
+    }
+
 }

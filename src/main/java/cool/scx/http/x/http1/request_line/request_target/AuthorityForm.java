@@ -47,4 +47,9 @@ public record AuthorityForm(String host, int port) implements RequestTarget {
             .port(port);
     }
 
+    @Override
+    public String encode() {
+        return host + ":" + port;
+    }
+
 }
