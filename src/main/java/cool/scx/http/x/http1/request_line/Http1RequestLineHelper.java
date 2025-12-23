@@ -1,15 +1,16 @@
 package cool.scx.http.x.http1.request_line;
 
+import cool.scx.http.x.http1.request_line.request_target.*;
 import dev.scx.http.method.ScxHttpMethod;
-import dev.scx.http.uri.ScxURI;
 import dev.scx.http.uri.ScxURIWritable;
 import dev.scx.http.version.HttpVersion;
 
-import java.net.URI;
+import java.net.URISyntaxException;
 
-import static dev.scx.http.method.HttpMethod.CONNECT;
-import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 import static cool.scx.http.x.HttpSchemeHelper.getDefaultPort;
+import static dev.scx.http.method.HttpMethod.CONNECT;
+import static dev.scx.http.method.HttpMethod.OPTIONS;
+import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 
 /// Http1RequestLineHelper
 ///
@@ -35,25 +36,34 @@ public final class Http1RequestLineHelper {
         var method = ScxHttpMethod.of(methodStr);
         var httpVersion = HttpVersion.find(httpVersionStr);
 
-        ScxURI requestTarget;
+        RequestTarget requestTarget;
 
         if (method == CONNECT) {
-            requestTarget = ScxURI.ofAuthority(requestTargetStr);  // CONNECT 使用 Authority 格式
-        } else {
-            // 处理空请求路径
-            if ("".equals(requestTargetStr)) {
-                requestTargetStr = "/";  // 空路径默认处理为 "/"
-            }
-            //尝试解码路径 如果解析失败, 则可能是路径中包含非法字符
-            //此处我们同样不去细化异常 直接抛出 InvalidHttpRequestLineException 异常
-            URI decodedPath;
             try {
-                decodedPath = URI.create(requestTargetStr);
-            } catch (IllegalArgumentException e) {
+                requestTarget = AuthorityForm.of(requestTargetStr);  // CONNECT 使用 Authority 格式
+            } catch (URISyntaxException e) {
                 throw new InvalidRequestLineException(requestLineStr);
             }
-
-            requestTarget = ScxURI.of(decodedPath);
+        } else if (requestTargetStr.startsWith("/")) {
+            try {
+                requestTarget = OriginForm.of(requestTargetStr);
+            } catch (URISyntaxException e) {
+                throw new InvalidRequestLineException(requestLineStr);
+            }
+        } else if ("*".equals(requestTargetStr)) {
+            // 只有 OPTIONS 允许 *
+            if (method == OPTIONS) {
+                requestTarget = AsteriskForm.of();
+            } else {
+                throw new InvalidRequestLineException(requestLineStr);
+            }
+        } else {
+            // 这里只可能是 AbsoluteForm, 或者非法字符串
+            try {
+                requestTarget = AbsoluteForm.of(requestLineStr);
+            } catch (URISyntaxException e) {
+                throw new InvalidRequestLineException(requestLineStr);
+            }
         }
 
         //这里我们强制 版本号必须是 HTTP/1.1 , 这里需要细化一下 异常
