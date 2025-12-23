@@ -50,12 +50,15 @@ public final class Http1Writer {
         }
 
         // 2, 处理 body 相关
-        if (expectedLength < 0) {//表示不知道 body 的长度
+        if (expectedLength < 0) {// 表示不知道 body 的长度
             // 如果用户已经手动设置了 Content-Length, 我们便不再设置 分块传输
             if (headers.contentLength() == null) {
                 headers.transferEncoding(CHUNKED);
+            } else {
+                // 否则使用用户已经设置的 contentLength
+                expectedLength = headers.contentLength();
             }
-        } else if (expectedLength > 0) {//拥有指定长度的响应体
+        } else if (expectedLength > 0) {// 拥有指定长度的响应体
             // 如果用户已经手动设置 分块传输, 我们便不再设置 Content-Length
             if (headers.transferEncoding() != CHUNKED) {
                 headers.contentLength(expectedLength);
@@ -125,12 +128,16 @@ public final class Http1Writer {
         }
 
         // 2, 处理 body 相关
-        if (expectedLength < 0) {//表示不知道 body 的长度
+        if (expectedLength < 0) {// 表示不知道 body 的长度
             // 如果用户已经手动设置了 Content-Length, 我们便不再设置 分块传输
             if (headers.contentLength() == null) {
                 headers.transferEncoding(CHUNKED);
             }
-        } else if (expectedLength > 0) {//拥有指定长度的响应体
+            else {
+                // 否则使用用户已经设置的 contentLength
+                expectedLength = headers.contentLength();
+            }
+        } else if (expectedLength > 0) {// 拥有指定长度的响应体
             // 如果用户已经手动设置 分块传输, 我们便不再设置 Content-Length
             if (headers.transferEncoding() != CHUNKED) {
                 headers.contentLength(expectedLength);
