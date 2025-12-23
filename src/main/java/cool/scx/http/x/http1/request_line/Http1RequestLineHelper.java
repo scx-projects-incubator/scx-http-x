@@ -20,7 +20,7 @@ public final class Http1RequestLineHelper {
 
     /// 解析 请求行
     public static Http1RequestLine parseRequestLine(String requestLineStr) throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
-        var parts = requestLineStr.split(" ");
+        var parts = requestLineStr.split(" ", -1);
 
         // 如果长度等于 2, 则可能是 HTTP/0.9 请求
         // 如果长度大于 3, 则可能是 路径中包含意外的空格
