@@ -14,7 +14,7 @@ import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class Http1RequestLineHelper {
+final class Http1RequestLineHelper {
 
     /// 解析 请求行
     public static Http1RequestLine parseRequestLine(String requestLineStr) throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {

@@ -24,11 +24,7 @@ public record Http1RequestLine(ScxHttpMethod method, RequestTarget requestTarget
     }
 
     public String encode() {
-        return encode(RequestTargetForm.ORIGIN_FORM);
-    }
-
-    public String encode(RequestTargetForm requestTargetForm) {
-        return Http1RequestLineHelper.encodeRequestLine(this, requestTargetForm);
+        return Http1RequestLineHelper.encodeRequestLine(this);
     }
 
 }
