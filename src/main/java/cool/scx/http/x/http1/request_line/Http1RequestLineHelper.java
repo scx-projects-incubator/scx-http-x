@@ -130,6 +130,7 @@ public final class Http1RequestLineHelper {
     }
 
     // todo 这个方法貌似 不是特别健壮
+     // 比如 uri 的 path 为 null 是不是应该 转换成 / ?
     // 参考 getRequestTargetStr
     public static RequestTarget inferRequestTargetForm(ScxHttpMethod method, ScxURI uri, boolean useProxy) {
         if (method == CONNECT) {
