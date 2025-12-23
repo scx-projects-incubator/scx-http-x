@@ -22,9 +22,9 @@ public final class Http1RequestLineHelper {
     public static Http1RequestLine parseRequestLine(String requestLineStr) throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
         var parts = requestLineStr.split(" ");
 
-        //如果长度等于 2, 则可能是 HTTP/0.9 请求
-        //如果长度大于 3, 则可能是 路径中包含意外的空格
-        //但是此处我们没必要细化异常 全部抛出 InvalidHttpRequestLineException 异常
+        // 如果长度等于 2, 则可能是 HTTP/0.9 请求
+        // 如果长度大于 3, 则可能是 路径中包含意外的空格
+        // 但是此处我们没必要细化异常 全部抛出 InvalidHttpRequestLineException 异常
         if (parts.length != 3) {
             throw new InvalidRequestLineException(requestLineStr);
         }
@@ -35,6 +35,11 @@ public final class Http1RequestLineHelper {
 
         var method = ScxHttpMethod.of(methodStr);
         var httpVersion = HttpVersion.find(httpVersionStr);
+
+        // 这里我们强制 版本号必须是 HTTP/1.1 , 这里需要细化一下 异常
+        if (httpVersion != HTTP_1_1) {
+            throw new InvalidRequestLineHttpVersionException(httpVersionStr);
+        }
 
         RequestTarget requestTarget;
 
@@ -60,15 +65,10 @@ public final class Http1RequestLineHelper {
         } else {
             // 这里只可能是 AbsoluteForm, 或者非法字符串
             try {
-                requestTarget = AbsoluteForm.of(requestLineStr);
+                requestTarget = AbsoluteForm.of(requestTargetStr);
             } catch (URISyntaxException e) {
                 throw new InvalidRequestLineException(requestLineStr);
             }
-        }
-
-        //这里我们强制 版本号必须是 HTTP/1.1 , 这里需要细化一下 异常
-        if (httpVersion != HTTP_1_1) {
-            throw new InvalidRequestLineHttpVersionException(httpVersionStr);
         }
 
         return new Http1RequestLine(method, requestTarget, httpVersion);
