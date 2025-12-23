@@ -12,10 +12,10 @@ import java.net.URISyntaxException;
 /// - 所有字段和 [ScxURI] 一样都是 存储的 "原始未编码" 值, 所以可以直接用于创建 [ScxURI]
 public record OriginForm(String path, String query, String fragment) implements RequestTarget {
 
-    /// 这里 origin 必定是 "/" 起始, 如果不是 那么结果是不可靠的.
     public static OriginForm of(String origin) throws URISyntaxException {
+        // 这里我们假定 origin 必定是 "/" 起始的
         // 我们借用 URI 来作为 解析器
-        var u = new URI(origin);
+        var u = new URI("scx://scx.dev" + origin);
         var path = u.getPath();
         var query = u.getQuery();
 
