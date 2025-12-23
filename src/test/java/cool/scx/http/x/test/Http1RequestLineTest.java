@@ -7,6 +7,7 @@ import cool.scx.http.x.http1.request_line.request_target.AbsoluteForm;
 import cool.scx.http.x.http1.request_line.request_target.AsteriskForm;
 import cool.scx.http.x.http1.request_line.request_target.AuthorityForm;
 import cool.scx.http.x.http1.request_line.request_target.OriginForm;
+import dev.scx.http.parameters.ParametersImpl;
 import org.testng.annotations.Test;
 
 import static dev.scx.http.method.HttpMethod.GET;
@@ -201,7 +202,7 @@ public class Http1RequestLineTest {
 
     @Test
     public static void test3() throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
-        var http1RequestLine = new Http1RequestLine(GET, new OriginForm("/中文/bar","aaa=bbb", null)).encode();
+        var http1RequestLine = new Http1RequestLine(GET, new OriginForm("/中文/bar", new ParametersImpl<String, String>().add("aaa", "bbb"), null)).encode();
         assertEquals(http1RequestLine, "GET /%E4%B8%AD%E6%96%87/bar?aaa=bbb HTTP/1.1");
     }
 
