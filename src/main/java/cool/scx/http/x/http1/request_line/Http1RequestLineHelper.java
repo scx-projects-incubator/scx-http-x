@@ -2,12 +2,10 @@ package cool.scx.http.x.http1.request_line;
 
 import cool.scx.http.x.http1.request_line.request_target.*;
 import dev.scx.http.method.ScxHttpMethod;
-import dev.scx.http.uri.ScxURIWritable;
 import dev.scx.http.version.HttpVersion;
 
 import java.net.URISyntaxException;
 
-import static cool.scx.http.x.HttpSchemeHelper.getDefaultPort;
 import static dev.scx.http.method.HttpMethod.CONNECT;
 import static dev.scx.http.method.HttpMethod.OPTIONS;
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;
@@ -75,47 +73,44 @@ public final class Http1RequestLineHelper {
     }
 
     /// 编码请求行
-    public static String encodeRequestLine(Http1RequestLine requestLine, RequestTargetForm requestTargetForm) {
-        var methodStr = requestLine.method().value();
+    public static String encodeRequestLine(Http1RequestLine requestLine) {
+        var method = requestLine.method();
+        var requestTarget = requestLine.requestTarget();
+        var httpVersion = requestLine.httpVersion();
 
-        var requestTarget = ScxURI.of(requestLine.requestTarget());
-        //处理空请求路径
-        if ("".equals(requestTarget.path())) {
-            requestTarget.path("/");
+        // 此处我们强制使用 HTTP/1.1
+        if (httpVersion != HTTP_1_1) {
+            throw new IllegalArgumentException("httpVersion is not supported");
         }
 
-        var requestTargetStr = getRequestTargetStr(requestTarget, requestTargetForm);
+        // 校验 method 和 requestTarget 的组合是否成立或者内容是否正确.
 
-        //此处我们强制使用 HTTP/1.1 , 忽略 requestLine 的版本号
-        var versionStr = HTTP_1_1.protocolVersion();
+        // 1, CONNECT 和 AuthorityForm 是一个组合 二者必须同时存在.
+        if (method == CONNECT && !(requestTarget instanceof AuthorityForm)) {
+            throw new IllegalArgumentException("");
+        }
+        if (requestTarget instanceof AuthorityForm authorityForm && method != CONNECT) {
+            throw new IllegalArgumentException("");
+        }
+        // 2, AsteriskForm 只有在 OPTIONS 时才允许.
+        if (requestTarget instanceof AsteriskForm asteriskForm && method != OPTIONS) {
+            throw new IllegalArgumentException("");
+        }
+        // 3, OriginForm 必须以 "/" 起始
+        if (requestTarget instanceof OriginForm originForm && !originForm.path().startsWith("/")) {
+            throw new IllegalArgumentException("");
+        }
+        // 4, AbsoluteForm 的 scheme 和 host 必须存在.
+        if (requestTarget instanceof AbsoluteForm absoluteForm && (absoluteForm.scheme() == null || absoluteForm.host() == null)) {
+            throw new IllegalArgumentException("");
+        }
 
-        //拼接返回
-        return methodStr + " " + requestTargetStr + " " + versionStr;
-    }
+        var methodStr = method.value();
+        var httpVersionStr = httpVersion.protocolVersion();
+        var requestTargetStr = requestTarget.encode();
 
-    public static String getRequestTargetStr(ScxURIWritable requestTarget, RequestTargetForm requestTargetForm) {
-        return switch (requestTargetForm) {
-            case ORIGIN_FORM -> requestTarget.scheme(null).host(null).encode(true);
-            case ABSOLUTE_FORM -> {
-                // 确保统一小写
-                var scheme = requestTarget.scheme().toLowerCase();
-                //注意转换 ws -> http
-                if ("ws".equals(scheme)) {
-                    scheme = "http";
-                } else if ("wss".equals(scheme)) {
-                    scheme = "https";
-                }
-                yield requestTarget.scheme(scheme).encode(true);
-            }
-            case AUTHORITY_FORM -> {
-                var port = requestTarget.port();
-                if (port == null) {
-                    port = getDefaultPort(requestTarget.scheme());
-                }
-                yield requestTarget.host() + ":" + port;
-            }
-            case ASTERISK_FORM -> "*";
-        };
+        // 拼接返回
+        return methodStr + " " + requestTargetStr + " " + httpVersionStr;
     }
 
 }
