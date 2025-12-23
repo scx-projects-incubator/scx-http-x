@@ -130,6 +130,7 @@ public final class Http1RequestLineHelper {
     }
 
     // todo 这个方法貌似 不是特别健壮
+    // 参考 getRequestTargetStr
     public static RequestTarget inferRequestTargetForm(ScxHttpMethod method, ScxURI uri, boolean useProxy) {
         if (method == CONNECT) {
             return new AuthorityForm(uri.host(), uri.port());

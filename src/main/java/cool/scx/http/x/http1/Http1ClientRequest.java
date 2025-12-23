@@ -2,7 +2,6 @@ package cool.scx.http.x.http1;
 
 import dev.scx.http.ScxHttpClientRequest;
 import dev.scx.http.sender.ScxHttpSenderStatus;
-import cool.scx.http.x.http1.request_line.RequestTargetForm;
 
 /// Http1ClientRequest
 ///

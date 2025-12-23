@@ -19,7 +19,6 @@ import static dev.scx.http.status_code.HttpStatusCode.OK;
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 import static cool.scx.http.x.HttpSchemeHelper.checkIsTLS;
 import static cool.scx.http.x.HttpSchemeHelper.getRemoteAddress;
-import static cool.scx.http.x.http1.request_line.RequestTargetForm.AUTHORITY_FORM;
 
 /// HttpClient
 ///
