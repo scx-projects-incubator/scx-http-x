@@ -33,7 +33,7 @@ public class Http1ServerRequest implements ScxHttpServerRequest {
     public Http1ServerRequest(Http1ServerConnection connection, Http1RequestLine requestLine, Http1Headers headers, ByteInput bodyByteInput) {
         this.connection = connection;
         this.method = requestLine.method();
-        this.uri = inferURI(requestLine.requestTarget(), headers, connection.tcpSocket);
+        this.uri = requestLine.requestTarget().toScxURI();
         this.version = requestLine.httpVersion();
         this.headers = headers;
         this.body = new Http1Body(bodyByteInput, this.headers);
