@@ -1,9 +1,12 @@
 package cool.scx.http.x.http1.request_line.request_target;
 
+import dev.scx.http.parameters.Parameters;
 import dev.scx.http.uri.ScxURI;
 
 import java.net.URI;
 import java.net.URISyntaxException;
+
+import static dev.scx.http.uri.ScxURIHelper.decodeQuery;
 
 /// 例: `GET http://example.com/index.html HTTP/1.1`
 ///
@@ -11,7 +14,7 @@ import java.net.URISyntaxException;
 ///
 /// - 所有字段和 [ScxURI] 一样都是 存储的 "原始未编码" 值, 所以可以直接用于创建 [ScxURI]
 public record AbsoluteForm(String scheme, String host, Integer port,
-                           String path, String query, String fragment) implements RequestTarget {
+                           String path, Parameters<String, String> query, String fragment) implements RequestTarget {
 
     public static AbsoluteForm of(String absolute) throws URISyntaxException {
         // 我们借用 URI 来作为 解析器
@@ -39,7 +42,7 @@ public record AbsoluteForm(String scheme, String host, Integer port,
             host,
             port == -1 ? null : port,
             path,
-            query,
+            decodeQuery(query),
             fragment
         );
     }
