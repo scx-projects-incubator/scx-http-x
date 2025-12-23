@@ -25,6 +25,7 @@ public class Http1RequestLineParseTest {
         testInvalidCombinations();
         test1();
         test2();
+        testAllEdgeCases();
     }
 
 
@@ -194,6 +195,97 @@ public class Http1RequestLineParseTest {
         System.out.println(s.requestTarget());
         System.out.println(c.requestTarget());
 
+    }
+
+    @Test
+    public static void testAllEdgeCases() {
+        // --------- 合法请求 ---------
+        String[] validRequests = {
+            "GET / HTTP/1.1",
+            "GET /foo/bar HTTP/1.1",
+            "GET /foo?bar=baz HTTP/1.1",
+            "GET /foo?bar=baz#fragment HTTP/1.1",
+            "OPTIONS /foo HTTP/1.1",
+            "GET http://example.com/index.html HTTP/1.1",
+            "GET https://example.com:8443/path?query HTTP/1.1",
+            "CONNECT example.com:443 HTTP/1.1",
+            "CONNECT [::1]:65535 HTTP/1.1",
+            "OPTIONS * HTTP/1.1"
+        };
+
+        for (String req : validRequests) {
+            try {
+                Http1RequestLine line = Http1RequestLine.of(req);
+                assertNotNull(line, "Parsed line should not be null: " + req);
+
+                // 验证 request-target 类型
+                if (req.startsWith("GET /") || req.startsWith("OPTIONS /")) {
+                    assertTrue(line.requestTarget() instanceof OriginForm, req);
+                } else if (req.startsWith("GET http")) {
+                    assertTrue(line.requestTarget() instanceof AbsoluteForm, req);
+                } else if (req.startsWith("CONNECT")) {
+                    assertTrue(line.requestTarget() instanceof AuthorityForm, req);
+                } else if (req.startsWith("OPTIONS *")) {
+                    assertTrue(line.requestTarget() instanceof AsteriskForm, req);
+                }
+            } catch (Exception e) {
+                fail("Valid request threw exception: " + req + " -> " + e);
+            }
+        }
+
+        // --------- 非法请求 ---------
+        String[] invalidRequests = {
+            // 尾部/前导/多空格
+            "GET  /foo HTTP/1.1",
+            "GET /foo  HTTP/1.1",
+            " GET /foo HTTP/1.1",
+            "GET /foo HTTP/1.1 ",
+            "GET\t/foo HTTP/1.1",
+            // request-target 异常
+            "GET * HTTP/1.1",
+            "GET example.com/index.html HTTP/1.1",
+            "GET /%ZZ HTTP/1.1",
+            "GET /%2G HTTP/1.1",
+            "GET /% HTTP/1.1",
+            "CONNECT example.com HTTP/1.1",
+            "CONNECT example.com:0 HTTP/1.1",
+            "CONNECT example.com:65536 HTTP/1.1",
+            "CONNECT example.com:abc HTTP/1.1",
+            "CONNECT :443 HTTP/1.1",
+            "CONNECT [2001:db8::1 HTTP/1.1",
+            // HTTP 版本异常
+            "GET /foo HTTP/1.0",
+            "GET /foo HTTP/2.0",
+            "GET /foo HTTP/1",
+            "GET /foo HTTPS/1.1",
+            // 组合边界
+            "POST * HTTP/1.1",
+            "CONNECT example.com HTTP/1.0",
+            "GET  http://example.com HTTP/1.0",
+            // 空方法名
+            " /foo HTTP/1.1",
+            "\t/foo HTTP/1.1"
+        };
+
+        for (String req : invalidRequests) {
+            try {
+                Http1RequestLine.of(req);
+            } catch (InvalidRequestLineException | InvalidRequestLineHttpVersionException e) {
+                // pass
+            } catch (Exception e) {
+                fail("Unexpected exception for invalid request: " + req + " -> " + e);
+            }
+        }
+
+        // --------- 额外输出验证 ---------
+        try {
+            Http1RequestLine line = Http1RequestLine.of("GET http://www.test.com/a/b/c/ HTTP/1.1");
+            assertTrue(line.requestTarget() instanceof AbsoluteForm);
+            Http1RequestLine connLine = Http1RequestLine.of("CONNECT www.test.com:443 HTTP/1.1");
+            assertTrue(connLine.requestTarget() instanceof AuthorityForm);
+        } catch (Exception e) {
+            fail("Unexpected exception in extra output validation: " + e);
+        }
     }
 
 }
