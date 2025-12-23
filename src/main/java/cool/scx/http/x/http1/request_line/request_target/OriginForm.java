@@ -14,6 +14,8 @@ public record OriginForm(String path, String query, String fragment) implements 
         var u = new URI(origin);
         var path = u.getPath();
         var query = u.getQuery();
+
+        // 根据 HTTP 规范, 不应该允许 fragment 但是我们这里选择支持
         var fragment = u.getFragment();
 
         return new OriginForm(path, query, fragment);

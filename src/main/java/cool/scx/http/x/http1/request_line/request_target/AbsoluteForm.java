@@ -1,10 +1,42 @@
 package cool.scx.http.x.http1.request_line.request_target;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 
 /// 例: `GET http://example.com/index.html HTTP/1.1`
 ///
 /// 通过 `HTTP代理` 发出请求时使用
-public class AbsoluteForm implements RequestTarget{
+public record AbsoluteForm(String scheme, String host, Integer port,
+                           String path, String query, String fragment) implements RequestTarget {
 
+    public static AbsoluteForm of(String absolute) throws URISyntaxException {
+        var u = new URI(absolute);
+
+        var scheme = u.getScheme();
+        var host = u.getHost();
+        var port = u.getPort();
+        var path = u.getPath();
+        var query = u.getQuery();
+
+        // 根据 HTTP 规范, 不应该允许 fragment 但是我们这里选择支持
+        var fragment = u.getFragment();
+
+        if (scheme == null) {
+            throw new URISyntaxException(absolute, "scheme is null");
+        }
+
+        if (host == null) {
+            throw new URISyntaxException(absolute, "host is null");
+        }
+
+        return new AbsoluteForm(
+            scheme,
+            host,
+            port == -1 ? null : port,
+            path,
+            query,
+            fragment
+        );
+    }
 
 }
