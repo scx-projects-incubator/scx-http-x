@@ -8,6 +8,8 @@ import java.net.URISyntaxException;
 /// 例: `GET /index.html?foo=1 HTTP/1.1`
 ///
 /// 用于大多数客户端请求
+///
+/// - 所有字段和 [ScxURI] 一样都是 存储的 "原始未编码" 值, 所以可以直接用于创建 [ScxURI]
 public record OriginForm(String path, String query, String fragment) implements RequestTarget {
 
     /// 这里 origin 必定是 "/" 起始, 如果不是 那么结果是不可靠的.
