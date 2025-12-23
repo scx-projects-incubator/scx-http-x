@@ -22,22 +22,20 @@ public record AuthorityForm(String host, int port) implements RequestTarget {
         int port;
 
         // 我们需要校验 portStr 必须存在 + 是一个数组 + 范围在 1 - 65535 中
-        if (portStr.isEmpty()) {
-            throw new URISyntaxException(authority, "port is missing");
-        }
         try {
             port = Integer.parseInt(portStr);
             if (port < 1 || port > 65535) {
                 throw new URISyntaxException(authority, "Invalid port");
             }
         } catch (NumberFormatException e) {
+            // (这里已经间接校验 portStr = "" 的情况了)
             throw new URISyntaxException(authority, "Invalid port");
         }
 
-        // 我们需要校验 host 是一个合法的 host
-        if (hostStr.isEmpty()) {
-            throw new URISyntaxException(authority, "Host is missing");
-        }
+        // 我们需要校验 hostStr 是一个合法的 host, 必须是 RFC3986 意义上的合法 host
+        // 这里借用 new URI 来完成校验, 不报错即是合法 host (这里已经间接校验 hostStr = "" 的情况了)
+        new URI("scx", hostStr, null, null);
+        host = hostStr;
 
         return new AuthorityForm(host, port);
     }
