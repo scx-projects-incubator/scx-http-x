@@ -9,7 +9,7 @@ import java.net.URISyntaxException;
 ///
 /// 通过 `HTTP代理` 发出请求时使用
 ///
-///- 所有字段和 [ScxURI] 一样都是 存储的 "原始未编码" 值, 所以可以直接用于创建 [ScxURI]
+/// - 所有字段和 [ScxURI] 一样都是 存储的 "原始未编码" 值, 所以可以直接用于创建 [ScxURI]
 public record AbsoluteForm(String scheme, String host, Integer port,
                            String path, String query, String fragment) implements RequestTarget {
 
