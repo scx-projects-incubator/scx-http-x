@@ -110,7 +110,7 @@ public final class Http1Writer {
         // 1, 创建 请求行
         var requestLine = new Http1RequestLine(method, requestTarget);
 
-        // 根据 requestTargetForm 编码
+        // 编码
         var requestLineStr = requestLine.encode();
 
         // 处理头相关
