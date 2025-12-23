@@ -14,6 +14,7 @@ public record AbsoluteForm(String scheme, String host, Integer port,
                            String path, String query, String fragment) implements RequestTarget {
 
     public static AbsoluteForm of(String absolute) throws URISyntaxException {
+        // 我们借用 URI 来作为 解析器
         var u = new URI(absolute);
 
         var scheme = u.getScheme();
