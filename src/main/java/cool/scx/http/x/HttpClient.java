@@ -138,7 +138,6 @@ public class HttpClient implements ScxHttpClient {
         //2, 和代理服务器 握手
         var proxyResponse = new Http1ClientConnection(tcpSocket, options.http1ClientConnectionOptions()).sendRequest(
                 (HttpClientRequest) new HttpClientRequest(this, HTTP_1_1)
-                    .requestTargetForm(AUTHORITY_FORM)
                     .method(CONNECT)
                     .addHeader("proxy-connection", "keep-alive")
                     .uri(uri),

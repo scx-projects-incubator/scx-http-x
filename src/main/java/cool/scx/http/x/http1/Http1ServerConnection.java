@@ -1,5 +1,11 @@
 package cool.scx.http.x.http1;
 
+import cool.scx.http.x.http1.body_supplier.AutoContinueByteSupplier;
+import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
+import cool.scx.http.x.http1.exception.RequestHeaderFieldsTooLargeException;
+import cool.scx.http.x.http1.headers.Http1Headers;
+import cool.scx.http.x.http1.request_line.Http1RequestLine;
+import cool.scx.http.x.http1.request_line.request_target.OriginForm;
 import dev.scx.function.Function1Void;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.error_handler.ErrorPhase;
@@ -8,12 +14,6 @@ import dev.scx.http.exception.BadRequestException;
 import dev.scx.http.exception.ContentTooLargeException;
 import dev.scx.http.exception.URITooLongException;
 import dev.scx.http.method.ScxHttpMethod;
-import dev.scx.http.uri.ScxURI;
-import cool.scx.http.x.http1.body_supplier.AutoContinueByteSupplier;
-import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
-import cool.scx.http.x.http1.exception.RequestHeaderFieldsTooLargeException;
-import cool.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.ScxIO;
@@ -25,14 +25,14 @@ import java.io.IOException;
 import java.lang.System.Logger;
 import java.net.Socket;
 
-import static dev.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
-import static dev.scx.http.error_handler.ErrorHandlerHelper.getErrorPhaseString;
-import static dev.scx.http.error_handler.ErrorPhase.SYSTEM;
-import static dev.scx.http.error_handler.ErrorPhase.USER;
 import static cool.scx.http.x.http1.Http1Helper.*;
 import static cool.scx.http.x.http1.Http1Reader.*;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
 import static cool.scx.http.x.http1.headers.expect.Expect.CONTINUE;
+import static dev.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
+import static dev.scx.http.error_handler.ErrorHandlerHelper.getErrorPhaseString;
+import static dev.scx.http.error_handler.ErrorPhase.SYSTEM;
+import static dev.scx.http.error_handler.ErrorPhase.USER;
 import static dev.scx.io.ScxIO.createByteInput;
 import static dev.scx.io.supplier.ClosePolicyByteSupplier.noCloseDrain;
 import static java.lang.System.Logger.Level.ERROR;
@@ -184,7 +184,7 @@ public class Http1ServerConnection {
         //此时我们并没有拿到一个完整的 request 对象 所以这里创建一个 虚拟 request 用于后续响应
         var fakeRequest = new Http1ServerRequest(
             this,
-            new Http1RequestLine(ScxHttpMethod.of("unknown"), ScxURI.of()),
+            new Http1RequestLine(ScxHttpMethod.of("unknown"), new OriginForm(null, null, null)),
             new Http1Headers().connection(CLOSE),
             new NullByteInput()
         );
