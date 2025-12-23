@@ -11,15 +11,16 @@ import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
-import static dev.scx.http.headers.HttpHeaderName.HOST;
-import static dev.scx.http.sender.ScxHttpSenderStatus.SENDING;
-import static dev.scx.http.sender.ScxHttpSenderStatus.SUCCESS;
-import static dev.scx.http.status_code.ScxHttpStatusCodeHelper.getReasonPhrase;
 import static cool.scx.http.x.http1.Http1Helper.checkRequestHasBody;
 import static cool.scx.http.x.http1.Http1Helper.checkResponseHasBody;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
 import static cool.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
 import static cool.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
+import static cool.scx.http.x.http1.request_line.Http1RequestLineHelper.inferRequestTargetForm;
+import static dev.scx.http.headers.HttpHeaderName.HOST;
+import static dev.scx.http.sender.ScxHttpSenderStatus.SENDING;
+import static dev.scx.http.sender.ScxHttpSenderStatus.SUCCESS;
+import static dev.scx.http.status_code.ScxHttpStatusCodeHelper.getReasonPhrase;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Http1Writer {
@@ -104,13 +105,13 @@ public final class Http1Writer {
         // 0, 准备参数
         var method = request.method();
         var uri = request.uri();
-        var requestTargetForm = request.requestTargetForm();
+        var requestTarget = inferRequestTargetForm(method, uri, request._useProxy());
 
         // 1, 创建 请求行
-        var requestLine = new Http1RequestLine(method, uri);
+        var requestLine = new Http1RequestLine(method, requestTarget);
 
         // 根据 requestTargetForm 编码
-        var requestLineStr = requestLine.encode(requestTargetForm);
+        var requestLineStr = requestLine.encode();
 
         // 处理头相关
         // 1, 处理 HOST 相关
