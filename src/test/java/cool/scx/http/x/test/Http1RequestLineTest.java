@@ -9,9 +9,10 @@ import cool.scx.http.x.http1.request_line.request_target.AuthorityForm;
 import cool.scx.http.x.http1.request_line.request_target.OriginForm;
 import org.testng.annotations.Test;
 
+import static dev.scx.http.method.HttpMethod.GET;
 import static org.testng.Assert.*;
 
-public class Http1RequestLineParseTest {
+public class Http1RequestLineTest {
 
     public static void main(String[] args) throws Exception {
         testOriginForm();
@@ -25,6 +26,7 @@ public class Http1RequestLineParseTest {
         testInvalidCombinations();
         test1();
         test2();
+        test3();
         testAllEdgeCases();
     }
 
@@ -195,6 +197,12 @@ public class Http1RequestLineParseTest {
         System.out.println(s.requestTarget());
         System.out.println(c.requestTarget());
 
+    }
+
+    @Test
+    public static void test3() throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
+        var http1RequestLine = new Http1RequestLine(GET, new OriginForm("/中文/bar","aaa=bbb", null)).encode();
+        assertEquals(http1RequestLine, "GET /%E4%B8%AD%E6%96%87/bar?aaa=bbb HTTP/1.1");
     }
 
     @Test
