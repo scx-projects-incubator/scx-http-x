@@ -9,6 +9,7 @@ import java.net.URISyntaxException;
 public record AuthorityForm(String host, int port) implements RequestTarget {
 
     public static AuthorityForm of(String authority) throws URISyntaxException {
+        // 我们借用 URI 来作为 解析器
         var u = new URI("scx://" + authority);
 
         var host = u.getHost();
