@@ -19,7 +19,7 @@ import java.util.concurrent.locks.ReentrantLock;
 
 import static dev.scx.http.sender.ScxHttpSenderStatus.FAILED;
 import static dev.scx.http.sender.ScxHttpSenderStatus.NOT_SENT;
-import static cool.scx.http.x.http1.Http1Writer.sendResponseHeaders;
+import static cool.scx.http.x.http1.io.Http1Writer.sendResponseHeaders;
 
 /// Http1ServerResponse
 ///
@@ -147,7 +147,7 @@ public class Http1ServerResponse implements ScxHttpServerResponse {
     }
 
     /// 内部方法 只应该由 Http1Writer 调用
-    void _setSenderStatus(ScxHttpSenderStatus senderStatus) {
+    public void _setSenderStatus(ScxHttpSenderStatus senderStatus) {
         this.senderStatus = senderStatus;
     }
 
