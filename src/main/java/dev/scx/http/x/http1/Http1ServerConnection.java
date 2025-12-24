@@ -1,7 +1,6 @@
 package dev.scx.http.x.http1;
 
 import dev.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.io.*;
 import dev.scx.http.x.http1.io.*;
 import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.x.http1.request_line.InvalidRequestLineException;
