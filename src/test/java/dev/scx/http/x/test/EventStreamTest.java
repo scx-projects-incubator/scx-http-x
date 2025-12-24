@@ -23,7 +23,7 @@ public class EventStreamTest {
             var eventStream = c.response().sendEventStream();
             try (eventStream) {
                 for (int i = 0; i < 100; i = i + 1) {
-                    eventStream.send(SseEvent.of("hello" + i).id("123").event("message").comment("这是注释"));
+                    eventStream.send(SseEvent.of("hello\r\n换行😀🥀🌴\r\n" + i).id("123").event("message").comment("这是注释"));
                     sleep(20);
                 }
             }
