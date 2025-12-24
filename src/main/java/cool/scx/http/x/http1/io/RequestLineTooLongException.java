@@ -6,7 +6,7 @@ import dev.scx.http.status_code.ScxHttpStatusCode;
 
 public final class RequestLineTooLongException extends Exception implements ScxHttpException {
 
-    public RequestLineTooLongException(String message) {
+    RequestLineTooLongException(String message) {
         super(message);
     }
 
