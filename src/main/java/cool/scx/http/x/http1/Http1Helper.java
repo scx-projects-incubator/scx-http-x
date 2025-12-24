@@ -95,28 +95,28 @@ public final class Http1Helper {
         return PeerInfo.of().address(address).host(address.getHostString()).port(address.getPort());
     }
 
-
-    // todo 这个方法貌似 不是特别健壮
-    // 比如 uri 的 path 为 null 是不是应该 转换成 / ?
-    // 参考 getRequestTargetStr
-    public static RequestTarget inferRequestTargetForm(ScxHttpMethod method, ScxURI uri, boolean useProxy) {
+    /// 创建 RequestTarget
+    public static RequestTarget createRequestTarget(ScxHttpMethod method, ScxURI uri, boolean useProxy) {
+        var scheme = uri.scheme();
+        var host = uri.host();
+        var port = uri.port();
+        var path = uri.path();
+        var query = uri.query();
+        var fragment = uri.fragment();
         if (method == CONNECT) {
-            return new AuthorityForm(uri.host(), uri.port());
+            return new AuthorityForm(host, port);
         } else if (method == OPTIONS) {
             // 如果 uri 所有组件都是 null 就表示 是 AsteriskForm
-            if (uri.scheme() == null &&
-                uri.host() == null &&
-                uri.port() == null &&
-                uri.path() == null &&
-                uri.query() == null &&
-                uri.fragment() == null) {
+            if (scheme == null && host == null && port == null && path == null && query.isEmpty() && fragment == null) {
                 return AsteriskForm.of();
             }
         }
         if (useProxy) {
-            return new AbsoluteForm(uri.scheme(), uri.host(), uri.port(), uri.path(), uri.query(), uri.fragment());
+            return new AbsoluteForm(scheme, host, port, path, query, fragment);
         } else {
-            return new OriginForm(uri.path(), uri.query(), uri.fragment());
+            // OriginForm 必须 / 起始, 我们在此处 处理 null 和 "" -> "/" 的兼容
+            var finalPath = path == null || path.isEmpty() ? "/" : path;
+            return new OriginForm(finalPath, query, fragment);
         }
     }
 

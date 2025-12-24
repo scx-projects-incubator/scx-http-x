@@ -106,7 +106,7 @@ public final class Http1Writer {
         // 0, 准备参数
         var method = request.method();
         var uri = request.uri();
-        var requestTarget = inferRequestTargetForm(method, uri, request._useProxy());
+        var requestTarget = createRequestTarget(method, uri, request._useProxy());
 
         // 1, 创建 请求行
         var requestLine = new Http1RequestLine(method, requestTarget);

@@ -45,7 +45,7 @@ public class HttpClient implements ScxHttpClient {
     // todo 后期可以创建一个 连接池 用来复用 未断开的 tcp 连接
     public Socket createSocket(ScxURI uri, String... applicationProtocols) throws IOException {
         //判断是否 tls
-        var isTLS = checkIsTLS(uri);
+        var isTLS = checkIsTLS(uri.scheme());
         //判断是否使用代理
         var withProxy = options.proxy() != null;
 
