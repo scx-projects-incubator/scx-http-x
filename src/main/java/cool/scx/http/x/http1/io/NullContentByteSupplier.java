@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.body_supplier;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteInput;
@@ -6,7 +6,7 @@ import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 import dev.scx.io.supplier.ByteSupplier;
 
-public class NullContentByteSupplier implements ByteSupplier {
+public final class NullContentByteSupplier implements ByteSupplier {
 
     private final ByteInput byteInput;
 
