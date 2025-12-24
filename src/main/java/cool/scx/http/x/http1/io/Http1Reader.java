@@ -8,7 +8,6 @@ import cool.scx.http.x.http1.status_line.Http1StatusLine;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineHttpVersionException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineStatusCodeException;
-import dev.scx.http.exception.URITooLongException;
 import dev.scx.io.ByteInput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.NoMatchFoundException;
@@ -76,7 +75,7 @@ public final class Http1Reader {
         }
     }
 
-    public static Http1RequestLine readRequestLine(ByteInput dataReader, int maxRequestLineSize) throws ScxIOException, AlreadyClosedException, NoMoreDataException, URITooLongException, RequestLineTooLongException, InvalidRequestLineException, InvalidRequestLineHttpVersionException {
+    public static Http1RequestLine readRequestLine(ByteInput dataReader, int maxRequestLineSize) throws ScxIOException, AlreadyClosedException, NoMoreDataException, RequestLineTooLongException, InvalidRequestLineException, InvalidRequestLineHttpVersionException {
         //尝试读取 请求行
         try {
             // 1, 尝试读取到 第一个 \r\n 为止
