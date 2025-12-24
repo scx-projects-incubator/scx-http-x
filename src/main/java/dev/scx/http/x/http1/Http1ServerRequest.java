@@ -1,13 +1,13 @@
 package dev.scx.http.x.http1;
 
-import dev.scx.http.x.http1.headers.Http1Headers;
-import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.body.ScxHttpBody;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.peer_info.PeerInfo;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.version.HttpVersion;
+import dev.scx.http.x.http1.headers.Http1Headers;
+import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.io.ByteInput;
 
 import static dev.scx.http.x.http1.Http1Helper.getLocalPeer;

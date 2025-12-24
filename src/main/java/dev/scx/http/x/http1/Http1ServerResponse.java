@@ -1,6 +1,5 @@
 package dev.scx.http.x.http1;
 
-import dev.scx.http.x.http1.headers.Http1Headers;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.ScxHttpServerResponse;
 import dev.scx.http.headers.ScxHttpHeaders;
@@ -10,6 +9,7 @@ import dev.scx.http.sender.IllegalSenderStateException;
 import dev.scx.http.sender.ScxHttpSenderStatus;
 import dev.scx.http.status_code.HttpStatusCode;
 import dev.scx.http.status_code.ScxHttpStatusCode;
+import dev.scx.http.x.http1.headers.Http1Headers;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
@@ -17,9 +17,9 @@ import dev.scx.io.exception.ScxIOException;
 import java.io.IOException;
 import java.util.concurrent.locks.ReentrantLock;
 
-import static dev.scx.http.x.http1.io.Http1Writer.sendResponseHeaders;
 import static dev.scx.http.sender.ScxHttpSenderStatus.FAILED;
 import static dev.scx.http.sender.ScxHttpSenderStatus.NOT_SENT;
+import static dev.scx.http.x.http1.io.Http1Writer.sendResponseHeaders;
 
 /// Http1ServerResponse
 ///

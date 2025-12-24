@@ -1,5 +1,7 @@
 package dev.scx.http.x.http1;
 
+import dev.scx.http.headers.ScxHttpHeaders;
+import dev.scx.http.media.MediaWriter;
 import dev.scx.http.x.http1.headers.Http1Headers;
 import dev.scx.http.x.http1.io.ContentLengthBodyTooLargeException;
 import dev.scx.http.x.http1.io.HeaderTooLargeException;
@@ -9,8 +11,6 @@ import dev.scx.http.x.http1.status_line.Http1StatusLine;
 import dev.scx.http.x.http1.status_line.InvalidStatusLineException;
 import dev.scx.http.x.http1.status_line.InvalidStatusLineHttpVersionException;
 import dev.scx.http.x.http1.status_line.InvalidStatusLineStatusCodeException;
-import dev.scx.http.headers.ScxHttpHeaders;
-import dev.scx.http.media.MediaWriter;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.ScxIO;

@@ -17,10 +17,10 @@ import dev.scx.io.supplier.ByteSupplier;
 
 import java.util.Arrays;
 
+import static dev.scx.http.headers.ScxHttpHeadersHelper.parseHeaders;
 import static dev.scx.http.x.http1.Http1Helper.CRLF_BYTES;
 import static dev.scx.http.x.http1.Http1Helper.CRLF_CRLF_BYTES;
 import static dev.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
-import static dev.scx.http.headers.ScxHttpHeadersHelper.parseHeaders;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /// 读取 HTTP/1.1 请求和响应的工具类

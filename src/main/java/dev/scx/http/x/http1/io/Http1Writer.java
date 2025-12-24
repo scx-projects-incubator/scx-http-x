@@ -11,14 +11,14 @@ import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
-import static dev.scx.http.x.http1.Http1Helper.*;
-import static dev.scx.http.x.http1.headers.connection.Connection.CLOSE;
-import static dev.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
-import static dev.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
 import static dev.scx.http.headers.HttpHeaderName.HOST;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SENDING;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SUCCESS;
 import static dev.scx.http.status_code.ScxHttpStatusCodeHelper.getReasonPhrase;
+import static dev.scx.http.x.http1.Http1Helper.*;
+import static dev.scx.http.x.http1.headers.connection.Connection.CLOSE;
+import static dev.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
+import static dev.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Http1Writer {

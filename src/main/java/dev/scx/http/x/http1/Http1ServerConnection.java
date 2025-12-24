@@ -1,16 +1,16 @@
 package dev.scx.http.x.http1;
 
+import dev.scx.function.Function1Void;
+import dev.scx.http.ScxHttpServerRequest;
+import dev.scx.http.error_handler.ErrorPhase;
+import dev.scx.http.error_handler.ScxHttpServerErrorHandler;
+import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.x.http1.headers.Http1Headers;
 import dev.scx.http.x.http1.io.*;
 import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.x.http1.request_line.InvalidRequestLineException;
 import dev.scx.http.x.http1.request_line.InvalidRequestLineHttpVersionException;
 import dev.scx.http.x.http1.request_line.request_target.OriginForm;
-import dev.scx.function.Function1Void;
-import dev.scx.http.ScxHttpServerRequest;
-import dev.scx.http.error_handler.ErrorPhase;
-import dev.scx.http.error_handler.ScxHttpServerErrorHandler;
-import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.ScxIO;
@@ -24,13 +24,13 @@ import java.io.IOException;
 import java.lang.System.Logger;
 import java.net.Socket;
 
-import static dev.scx.http.x.http1.Http1Helper.*;
-import static dev.scx.http.x.http1.headers.connection.Connection.CLOSE;
-import static dev.scx.http.x.http1.headers.expect.Expect.CONTINUE;
 import static dev.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
 import static dev.scx.http.error_handler.ErrorHandlerHelper.getErrorPhaseString;
 import static dev.scx.http.error_handler.ErrorPhase.SYSTEM;
 import static dev.scx.http.error_handler.ErrorPhase.USER;
+import static dev.scx.http.x.http1.Http1Helper.*;
+import static dev.scx.http.x.http1.headers.connection.Connection.CLOSE;
+import static dev.scx.http.x.http1.headers.expect.Expect.CONTINUE;
 import static dev.scx.io.ScxIO.createByteInput;
 import static dev.scx.io.supplier.ClosePolicyByteSupplier.noCloseDrain;
 import static java.lang.System.Logger.Level.ERROR;

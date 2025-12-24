@@ -1,20 +1,20 @@
 package dev.scx.http.x;
 
-import dev.scx.http.x.http1.Http1ClientConnection;
 import dev.scx.http.ScxHttpClient;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.version.HttpVersion;
+import dev.scx.http.x.http1.Http1ClientConnection;
 import dev.scx.tcp.TCPClient;
 import dev.scx.tcp.tls.TLS;
 
 import java.io.IOException;
 import java.net.Socket;
 
-import static dev.scx.http.x.HttpClientHelper.*;
 import static dev.scx.http.media.empty.EmptyMediaWriter.EMPTY_MEDIA_WRITER;
 import static dev.scx.http.method.HttpMethod.CONNECT;
 import static dev.scx.http.status_code.HttpStatusCode.OK;
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;
+import static dev.scx.http.x.HttpClientHelper.*;
 
 /// HttpClient
 ///

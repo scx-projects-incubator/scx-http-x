@@ -1,8 +1,5 @@
 package dev.scx.http.x.http1;
 
-import dev.scx.http.x.http1.headers.Http1Headers;
-import dev.scx.http.x.http1.headers.upgrade.ScxUpgrade;
-import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.exception.BadRequestException;
 import dev.scx.http.headers.ScxHttpHeadersWritable;
 import dev.scx.http.method.ScxHttpMethod;
@@ -10,6 +7,9 @@ import dev.scx.http.peer_info.PeerInfo;
 import dev.scx.http.peer_info.PeerInfoWritable;
 import dev.scx.http.status_code.ScxHttpStatusCode;
 import dev.scx.http.uri.ScxURI;
+import dev.scx.http.x.http1.headers.Http1Headers;
+import dev.scx.http.x.http1.headers.upgrade.ScxUpgrade;
+import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.x.http1.request_line.request_target.*;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
@@ -20,10 +20,10 @@ import java.net.InetSocketAddress;
 import java.net.Socket;
 import java.nio.charset.StandardCharsets;
 
-import static dev.scx.http.x.http1.headers.connection.Connection.UPGRADE;
 import static dev.scx.http.headers.HttpHeaderName.HOST;
 import static dev.scx.http.method.HttpMethod.*;
 import static dev.scx.http.status_code.HttpStatusCode.*;
+import static dev.scx.http.x.http1.headers.connection.Connection.UPGRADE;
 
 /// Http1Helper
 ///

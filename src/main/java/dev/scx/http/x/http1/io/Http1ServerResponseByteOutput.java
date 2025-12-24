@@ -1,7 +1,7 @@
 package dev.scx.http.x.http1.io;
 
-import dev.scx.http.x.http1.Http1ServerConnection;
 import dev.scx.function.Function0Void;
+import dev.scx.http.x.http1.Http1ServerConnection;
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;

@@ -1,9 +1,9 @@
 package dev.scx.http.x.test;
 
-import dev.scx.http.x.HttpClient;
-import dev.scx.http.x.HttpServer;
 import dev.scx.http.media.event_stream.SseEvent;
 import dev.scx.http.media.event_stream.event.EventClientEventStream;
+import dev.scx.http.x.HttpClient;
+import dev.scx.http.x.HttpServer;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

@@ -1,5 +1,6 @@
 package dev.scx.http.x.test;
 
+import dev.scx.http.parameters.ParametersImpl;
 import dev.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.x.http1.request_line.InvalidRequestLineException;
 import dev.scx.http.x.http1.request_line.InvalidRequestLineHttpVersionException;
@@ -7,7 +8,6 @@ import dev.scx.http.x.http1.request_line.request_target.AbsoluteForm;
 import dev.scx.http.x.http1.request_line.request_target.AsteriskForm;
 import dev.scx.http.x.http1.request_line.request_target.AuthorityForm;
 import dev.scx.http.x.http1.request_line.request_target.OriginForm;
-import dev.scx.http.parameters.ParametersImpl;
 import org.testng.annotations.Test;
 
 import static dev.scx.http.method.HttpMethod.GET;

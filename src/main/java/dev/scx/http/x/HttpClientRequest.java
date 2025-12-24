@@ -1,9 +1,5 @@
 package dev.scx.http.x;
 
-import dev.scx.http.x.http1.Http1ClientConnection;
-import dev.scx.http.x.http1.Http1ClientRequest;
-import dev.scx.http.x.http2.Http2ClientConnection;
-import dev.scx.http.x.http2.Http2ClientRequest;
 import dev.scx.http.ScxHttpClientRequest;
 import dev.scx.http.ScxHttpClientResponse;
 import dev.scx.http.headers.ScxHttpHeaders;
@@ -16,6 +12,10 @@ import dev.scx.http.sender.ScxHttpSenderStatus;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.uri.ScxURIWritable;
 import dev.scx.http.version.HttpVersion;
+import dev.scx.http.x.http1.Http1ClientConnection;
+import dev.scx.http.x.http1.Http1ClientRequest;
+import dev.scx.http.x.http2.Http2ClientConnection;
+import dev.scx.http.x.http2.Http2ClientRequest;
 
 import javax.net.ssl.SSLSocket;
 import java.io.IOException;

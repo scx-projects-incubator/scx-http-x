@@ -1,8 +1,8 @@
 package dev.scx.http.x.http1.request_line;
 
-import dev.scx.http.x.http1.request_line.request_target.RequestTarget;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.version.HttpVersion;
+import dev.scx.http.x.http1.request_line.request_target.RequestTarget;
 
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 

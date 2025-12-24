@@ -1,9 +1,9 @@
 package dev.scx.http.x.http1;
 
+import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.x.http1.headers.Http1Headers;
 import dev.scx.http.x.http1.headers.upgrade.ScxUpgrade;
 import dev.scx.http.x.http1.request_line.Http1RequestLine;
-import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.io.ByteInput;
 
 /// Http1UpgradeHandler
