@@ -43,7 +43,7 @@ public final class ContentLengthByteSupplier implements ByteSupplier {
         } catch (NoMoreDataException e) {
             // 如果底层 ByteInput 没数据了, 但是还仍为填满 contentLength 则抛出异常
             if (remaining > 0) {
-                throw new BodyTooShortException(BAD_REQUEST, "Content-Length : " + contentLength + ", Body-Length : " + (contentLength - remaining));
+                throw new BodyTooShortException("Content-Length : " + contentLength + ", Body-Length : " + (contentLength - remaining));
             }
             return null;
         } catch (AlreadyClosedException e) {
