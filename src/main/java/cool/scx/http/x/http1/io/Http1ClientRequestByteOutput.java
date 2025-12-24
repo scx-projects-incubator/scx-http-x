@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.byte_output;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.function.Function0Void;
 import dev.scx.io.ByteChunk;
@@ -10,7 +10,7 @@ import dev.scx.io.exception.ScxIOException;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class Http1ClientRequestByteOutput implements ByteOutput {
+public final class Http1ClientRequestByteOutput implements ByteOutput {
 
     private final ByteOutput byteOutput;
     private final Function0Void<RuntimeException> onClose;
@@ -64,6 +64,7 @@ public class Http1ClientRequestByteOutput implements ByteOutput {
 
         closed = true; // 只有成功关闭才算作 关闭
         onClose.apply();
+
     }
 
     public ByteOutput byteOutput() {

@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.byte_output;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.function.Function0Void;
 import cool.scx.http.x.http1.Http1ServerConnection;
@@ -13,11 +13,12 @@ import java.io.IOException;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public class Http1ServerResponseByteOutput implements ByteOutput {
+public final class Http1ServerResponseByteOutput implements ByteOutput {
 
     private final Http1ServerConnection connection;
     private final boolean closeConnection;
     private final Function0Void<RuntimeException> onClose;
+
     private boolean closed;
 
     public Http1ServerResponseByteOutput(Http1ServerConnection connection, boolean closeConnection, Function0Void<RuntimeException> onClose) {
@@ -36,18 +37,21 @@ public class Http1ServerResponseByteOutput implements ByteOutput {
     @Override
     public void write(byte b) {
         ensureOpen();
+
         connection.dataWriter.write(b);
     }
 
     @Override
     public void write(ByteChunk b) throws ScxIOException, AlreadyClosedException {
         ensureOpen();
+
         connection.dataWriter.write(b);
     }
 
     @Override
     public void flush() {
         ensureOpen();
+
         connection.dataWriter.flush();
     }
 
@@ -72,7 +76,7 @@ public class Http1ServerResponseByteOutput implements ByteOutput {
             connection.dataWriter.flush();
         }
 
-        closed = true;
+        closed = true; // 只有成功关闭才算作 关闭
         onClose.apply();
 
     }
