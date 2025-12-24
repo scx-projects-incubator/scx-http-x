@@ -1,5 +1,9 @@
-package cool.scx.http.x.http1;
+package cool.scx.http.x.http1.io;
 
+import cool.scx.http.x.http1.Http1ClientConnection;
+import cool.scx.http.x.http1.Http1ClientRequest;
+import cool.scx.http.x.http1.Http1ServerRequest;
+import cool.scx.http.x.http1.Http1ServerResponse;
 import cool.scx.http.x.http1.byte_output.ContentLengthByteOutput;
 import cool.scx.http.x.http1.byte_output.Http1ClientRequestByteOutput;
 import cool.scx.http.x.http1.byte_output.Http1ServerResponseByteOutput;
@@ -11,12 +15,10 @@ import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
-import static cool.scx.http.x.http1.Http1Helper.checkRequestHasBody;
-import static cool.scx.http.x.http1.Http1Helper.checkResponseHasBody;
+import static cool.scx.http.x.http1.Http1Helper.*;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
 import static cool.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
 import static cool.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
-import static cool.scx.http.x.http1.request_line.Http1RequestLineHelper.inferRequestTargetForm;
 import static dev.scx.http.headers.HttpHeaderName.HOST;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SENDING;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SUCCESS;
