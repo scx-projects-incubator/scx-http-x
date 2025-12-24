@@ -141,10 +141,10 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
         };
     }
 
-    public void checkMaxPayload(long chunkLength) throws BodyTooLargeException {
+    public void checkMaxPayload(long chunkLength) throws HttpChunkedBodyTooLargeException {
         // 检查数据块大小是否超过最大值
         if (position + chunkLength > maxLength) {
-            throw new BodyTooLargeException("HttpChunk 长度超过最大接受大小 !!!");
+            throw new HttpChunkedBodyTooLargeException("HttpChunk 长度超过最大接受大小 !!!");
         }
         position += chunkLength;
     }
