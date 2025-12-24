@@ -1,7 +1,5 @@
 package cool.scx.http.x.http1;
 
-import dev.scx.http.exception.ContentTooLargeException;
-import dev.scx.http.exception.URITooLongException;
 import cool.scx.http.x.http1.body_supplier.ContentLengthByteSupplier;
 import cool.scx.http.x.http1.body_supplier.HttpChunkedByteSupplier;
 import cool.scx.http.x.http1.body_supplier.NullContentByteSupplier;
@@ -16,6 +14,8 @@ import cool.scx.http.x.http1.status_line.Http1StatusLine;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineHttpVersionException;
 import cool.scx.http.x.http1.status_line.InvalidStatusLineStatusCodeException;
+import dev.scx.http.exception.ContentTooLargeException;
+import dev.scx.http.exception.URITooLongException;
 import dev.scx.io.ByteInput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.NoMatchFoundException;
@@ -25,10 +25,10 @@ import dev.scx.io.supplier.ByteSupplier;
 
 import java.util.Arrays;
 
-import static dev.scx.http.headers.ScxHttpHeadersHelper.parseHeaders;
 import static cool.scx.http.x.http1.Http1Helper.CRLF_BYTES;
 import static cool.scx.http.x.http1.Http1Helper.CRLF_CRLF_BYTES;
 import static cool.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
+import static dev.scx.http.headers.ScxHttpHeadersHelper.parseHeaders;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 /// 读取 HTTP/1.1 请求和响应的工具类
@@ -79,7 +79,7 @@ public final class Http1Reader {
             return parseHeaders(new Http1Headers(), headerStr, true); //使用严格模式解析
         } catch (ScxIOException | AlreadyClosedException | NoMoreDataException e) {
             // Socket 关闭了 或者底层 Socket 发生异常
-            throw new CloseConnectionException("读取 Headers 失败 !!!", e.getCause());
+            throw new CloseConnectionException("读取 Headers 失败 !!!", e);
         } catch (NoMatchFoundException e) {
             // 在指定长度内未匹配到 这里抛出请求头过大异常
             throw new RequestHeaderFieldsTooLargeException("请求头过长 !!!");
@@ -95,7 +95,7 @@ public final class Http1Reader {
             return Http1RequestLine.of(requestLineStr);
         } catch (ScxIOException | AlreadyClosedException | NoMoreDataException e) {
             // Socket 关闭了 或者底层 Socket 发生异常
-            throw new CloseConnectionException("读取 RequestLine 失败 !!!", e.getCause());
+            throw new CloseConnectionException("读取 RequestLine 失败 !!!", e);
         } catch (NoMatchFoundException e) {
             // 在指定长度内未匹配到 这里抛出 URI 过长异常
             throw new URITooLongException(e.getMessage());
@@ -114,7 +114,7 @@ public final class Http1Reader {
             var statusLineStr = new String(statusLineBytes);
             return Http1StatusLine.of(statusLineStr);
         } catch (NoMoreDataException | ScxIOException e) {
-            throw new CloseConnectionException("读取 StatusLine 时发生异常 !!!", e.getCause());
+            throw new RuntimeException("读取 StatusLine 时发生异常 !!!", e);
         } catch (NoMatchFoundException e) {
             // 在指定长度内未匹配到 这里抛出响应行过大异常, 包装到 RuntimeException 中 因为这其中的异常一般都会由用户来处理
             throw new RuntimeException("响应行过大 !!!");
