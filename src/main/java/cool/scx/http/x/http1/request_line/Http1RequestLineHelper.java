@@ -2,7 +2,6 @@ package cool.scx.http.x.http1.request_line;
 
 import cool.scx.http.x.http1.request_line.request_target.*;
 import dev.scx.http.method.ScxHttpMethod;
-import dev.scx.http.uri.ScxURI;
 import dev.scx.http.version.HttpVersion;
 
 import java.net.URISyntaxException;
@@ -127,30 +126,6 @@ public final class Http1RequestLineHelper {
 
         // 拼接返回
         return methodStr + " " + requestTargetStr + " " + httpVersionStr;
-    }
-
-    // todo 这个方法貌似 不是特别健壮
-     // 比如 uri 的 path 为 null 是不是应该 转换成 / ?
-    // 参考 getRequestTargetStr
-    public static RequestTarget inferRequestTargetForm(ScxHttpMethod method, ScxURI uri, boolean useProxy) {
-        if (method == CONNECT) {
-            return new AuthorityForm(uri.host(), uri.port());
-        } else if (method == OPTIONS) {
-            // 如果 uri 所有组件都是 null 就表示 是 AsteriskForm
-            if (uri.scheme() == null &&
-                uri.host() == null &&
-                uri.port() == null &&
-                uri.path() == null &&
-                uri.query() == null &&
-                uri.fragment() == null) {
-                return AsteriskForm.of();
-            }
-        }
-        if (useProxy) {
-            return new AbsoluteForm(uri.scheme(), uri.host(), uri.port(), uri.path(), uri.query(), uri.fragment());
-        } else {
-            return new OriginForm(uri.path(), uri.query(), uri.fragment());
-        }
     }
 
 }
