@@ -9,6 +9,10 @@ import dev.scx.http.version.HttpVersion;
 /// @version 0.0.1
 public record Http1StatusLine(HttpVersion httpVersion, ScxHttpStatusCode statusCode, String reasonPhrase) {
 
+    public Http1StatusLine(ScxHttpStatusCode statusCode, String reasonPhrase) {
+        this(HttpVersion.HTTP_1_1, statusCode, reasonPhrase);
+    }
+
     public static Http1StatusLine of(String statusLineStr) throws InvalidStatusLineException, InvalidStatusLineHttpVersionException, InvalidStatusLineStatusCodeException {
         return Http1StatusLineHelper.parseStatusLine(statusLineStr);
     }

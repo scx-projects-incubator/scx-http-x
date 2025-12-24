@@ -12,6 +12,7 @@ import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 public final class Http1StatusLineHelper {
 
     public static Http1StatusLine parseStatusLine(String statusLineStr) throws InvalidStatusLineException, InvalidStatusLineHttpVersionException, InvalidStatusLineStatusCodeException {
+        // 这里和 parseRequestLine 不同, 响应行是允许 空格的. 如 "HTTP/1.1 404 Not Found", 所以这里使用 limit = 3 限制一下.
         var parts = statusLineStr.split(" ", 3);
 
         if (parts.length != 3) {
@@ -41,7 +42,24 @@ public final class Http1StatusLineHelper {
     }
 
     public static String encodeStatusLine(Http1StatusLine statusLine) {
-        return statusLine.httpVersion().protocolVersion() + " " + statusLine.statusCode() + " " + statusLine.reasonPhrase();
+        var httpVersion = statusLine.httpVersion();
+        var statusCode = statusLine.statusCode();
+        var reasonPhrase = statusLine.reasonPhrase();
+        // 此处我们强制使用 HTTP/1.1
+        if (httpVersion != HTTP_1_1) {
+            throw new IllegalArgumentException("httpVersion is not supported");
+        }
+
+        // 此处校验 reasonPhrase, 不允许出现 \r 或 \n
+        if (reasonPhrase.contains("\r") || reasonPhrase.contains("\n")) {
+            throw new IllegalArgumentException("reasonPhrase contains illegal CR or LF characters");
+        }
+
+        var httpVersionStr = httpVersion.protocolVersion();
+        var statusCodeStr = statusCode.value() + "";
+
+        // 直接拼接
+        return httpVersionStr + " " + statusCodeStr + " " + reasonPhrase;
     }
 
 }
