@@ -1,11 +1,11 @@
-package cool.scx.http.x.http1.byte_output;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
-public class ContentLengthByteOutput implements ByteOutput {
+public final class ContentLengthByteOutput implements ByteOutput {
 
     private final ByteOutput byteOutput;
     private final long contentLength;

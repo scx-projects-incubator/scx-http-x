@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.body_supplier;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteInput;
