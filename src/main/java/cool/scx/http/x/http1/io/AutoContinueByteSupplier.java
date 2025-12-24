@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.body_supplier;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteOutput;
@@ -9,7 +9,7 @@ import dev.scx.io.supplier.ByteSupplier;
 import static cool.scx.http.x.http1.Http1Helper.sendContinue100;
 
 /// 当初次读取的时候 自动响应 Continue-100 响应
-public class AutoContinueByteSupplier implements ByteSupplier {
+public final class AutoContinueByteSupplier implements ByteSupplier {
 
     private final ByteSupplier byteSupplier;
     private final ByteOutput out;

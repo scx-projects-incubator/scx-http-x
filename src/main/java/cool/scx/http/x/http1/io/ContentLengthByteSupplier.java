@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.body_supplier;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteInput;
@@ -7,8 +7,6 @@ import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.NoMoreDataException;
 import dev.scx.io.exception.ScxIOException;
 import dev.scx.io.supplier.ByteSupplier;
-
-import static dev.scx.http.status_code.HttpStatusCode.BAD_REQUEST;
 
 /// ContentLengthByteSupplier
 ///
@@ -43,7 +41,7 @@ public final class ContentLengthByteSupplier implements ByteSupplier {
         } catch (NoMoreDataException e) {
             // 如果底层 ByteInput 没数据了, 但是还仍为填满 contentLength 则抛出异常
             if (remaining > 0) {
-                throw new BodyTooShortException(BAD_REQUEST, "Content-Length : " + contentLength + ", Body-Length : " + (contentLength - remaining));
+                throw new ContentLengthBodyTooShortException("Content-Length : " + contentLength + ", Body-Length : " + (contentLength - remaining));
             }
             return null;
         } catch (AlreadyClosedException e) {

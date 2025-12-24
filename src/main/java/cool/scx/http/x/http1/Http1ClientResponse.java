@@ -1,12 +1,12 @@
 package cool.scx.http.x.http1;
 
+import cool.scx.http.x.http1.headers.Http1Headers;
+import cool.scx.http.x.http1.status_line.Http1StatusLine;
 import dev.scx.http.ScxHttpClientResponse;
 import dev.scx.http.body.ScxHttpBody;
 import dev.scx.http.headers.ScxHttpHeaders;
 import dev.scx.http.status_code.ScxHttpStatusCode;
 import dev.scx.http.version.HttpVersion;
-import cool.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.status_line.Http1StatusLine;
 import dev.scx.io.ByteInput;
 
 import static dev.scx.http.version.HttpVersion.HTTP_1_1;

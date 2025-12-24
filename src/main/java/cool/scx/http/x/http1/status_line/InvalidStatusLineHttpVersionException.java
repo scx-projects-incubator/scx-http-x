@@ -10,7 +10,7 @@ public final class InvalidStatusLineHttpVersionException extends Exception {
 
     public final String httpVersionStr;
 
-    public InvalidStatusLineHttpVersionException(String httpVersionStr) {
+    InvalidStatusLineHttpVersionException(String httpVersionStr) {
         this.httpVersionStr = httpVersionStr;
         super("Invalid HttpVersion : " + httpVersionStr);
     }

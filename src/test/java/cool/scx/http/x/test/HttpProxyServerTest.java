@@ -1,10 +1,10 @@
 package cool.scx.http.x.test;
 
-import dev.scx.http.method.HttpMethod;
 import cool.scx.http.x.HttpClient;
 import cool.scx.http.x.HttpServer;
 import cool.scx.http.x.http1.Http1ClientResponse;
 import cool.scx.http.x.http1.Http1ServerRequest;
+import dev.scx.http.method.HttpMethod;
 import dev.scx.tcp.TCPClient;
 
 import java.io.IOException;

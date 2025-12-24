@@ -1,9 +1,9 @@
-package cool.scx.http.x.http1;
+package cool.scx.http.x.http1.io;
 
-import cool.scx.http.x.http1.byte_output.ContentLengthByteOutput;
-import cool.scx.http.x.http1.byte_output.Http1ClientRequestByteOutput;
-import cool.scx.http.x.http1.byte_output.Http1ServerResponseByteOutput;
-import cool.scx.http.x.http1.byte_output.HttpChunkedByteOutput;
+import cool.scx.http.x.http1.Http1ClientConnection;
+import cool.scx.http.x.http1.Http1ClientRequest;
+import cool.scx.http.x.http1.Http1ServerRequest;
+import cool.scx.http.x.http1.Http1ServerResponse;
 import cool.scx.http.x.http1.headers.Http1Headers;
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import cool.scx.http.x.http1.status_line.Http1StatusLine;
@@ -11,15 +11,14 @@ import dev.scx.io.ByteOutput;
 import dev.scx.io.exception.AlreadyClosedException;
 import dev.scx.io.exception.ScxIOException;
 
+import static cool.scx.http.x.http1.Http1Helper.*;
+import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
+import static cool.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
+import static cool.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
 import static dev.scx.http.headers.HttpHeaderName.HOST;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SENDING;
 import static dev.scx.http.sender.ScxHttpSenderStatus.SUCCESS;
 import static dev.scx.http.status_code.ScxHttpStatusCodeHelper.getReasonPhrase;
-import static cool.scx.http.x.http1.Http1Helper.checkRequestHasBody;
-import static cool.scx.http.x.http1.Http1Helper.checkResponseHasBody;
-import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
-import static cool.scx.http.x.http1.headers.connection.Connection.KEEP_ALIVE;
-import static cool.scx.http.x.http1.headers.transfer_encoding.TransferEncoding.CHUNKED;
 import static java.nio.charset.StandardCharsets.UTF_8;
 
 public final class Http1Writer {
@@ -49,12 +48,15 @@ public final class Http1Writer {
         }
 
         // 2, 处理 body 相关
-        if (expectedLength < 0) {//表示不知道 body 的长度
+        if (expectedLength < 0) {// 表示不知道 body 的长度
             // 如果用户已经手动设置了 Content-Length, 我们便不再设置 分块传输
             if (headers.contentLength() == null) {
                 headers.transferEncoding(CHUNKED);
+            } else {
+                // 否则使用用户已经设置的 contentLength
+                expectedLength = headers.contentLength();
             }
-        } else if (expectedLength > 0) {//拥有指定长度的响应体
+        } else if (expectedLength > 0) {// 拥有指定长度的响应体
             // 如果用户已经手动设置 分块传输, 我们便不再设置 Content-Length
             if (headers.transferEncoding() != CHUNKED) {
                 headers.contentLength(expectedLength);
@@ -104,13 +106,13 @@ public final class Http1Writer {
         // 0, 准备参数
         var method = request.method();
         var uri = request.uri();
-        var requestTargetForm = request.requestTargetForm();
+        var requestTarget = createRequestTarget(method, uri, request._useProxy());
 
         // 1, 创建 请求行
-        var requestLine = new Http1RequestLine(method, uri);
+        var requestLine = new Http1RequestLine(method, requestTarget);
 
-        // 根据 requestTargetForm 编码
-        var requestLineStr = requestLine.encode(requestTargetForm);
+        // 编码
+        var requestLineStr = requestLine.encode();
 
         // 处理头相关
         // 1, 处理 HOST 相关
@@ -124,12 +126,15 @@ public final class Http1Writer {
         }
 
         // 2, 处理 body 相关
-        if (expectedLength < 0) {//表示不知道 body 的长度
+        if (expectedLength < 0) {// 表示不知道 body 的长度
             // 如果用户已经手动设置了 Content-Length, 我们便不再设置 分块传输
             if (headers.contentLength() == null) {
                 headers.transferEncoding(CHUNKED);
+            } else {
+                // 否则使用用户已经设置的 contentLength
+                expectedLength = headers.contentLength();
             }
-        } else if (expectedLength > 0) {//拥有指定长度的响应体
+        } else if (expectedLength > 0) {// 拥有指定长度的响应体
             // 如果用户已经手动设置 分块传输, 我们便不再设置 Content-Length
             if (headers.transferEncoding() != CHUNKED) {
                 headers.contentLength(expectedLength);

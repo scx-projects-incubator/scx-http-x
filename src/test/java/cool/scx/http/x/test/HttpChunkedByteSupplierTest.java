@@ -1,7 +1,7 @@
 package cool.scx.http.x.test;
 
-import cool.scx.http.x.http1.body_supplier.HttpChunkedByteSupplier;
-import cool.scx.http.x.http1.body_supplier.HttpChunkedParseException;
+import cool.scx.http.x.http1.io.HttpChunkedByteSupplier;
+import cool.scx.http.x.http1.io.HttpChunkedParseException;
 import dev.scx.io.exception.ScxIOException;
 import dev.scx.io.supplier.ByteArrayByteSupplier;
 import org.testng.Assert;

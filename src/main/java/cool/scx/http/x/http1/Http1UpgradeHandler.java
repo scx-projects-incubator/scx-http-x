@@ -1,9 +1,9 @@
 package cool.scx.http.x.http1;
 
-import dev.scx.http.ScxHttpServerRequest;
 import cool.scx.http.x.http1.headers.Http1Headers;
 import cool.scx.http.x.http1.headers.upgrade.ScxUpgrade;
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
+import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.io.ByteInput;
 
 /// Http1UpgradeHandler

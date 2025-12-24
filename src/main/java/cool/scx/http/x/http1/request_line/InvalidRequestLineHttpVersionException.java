@@ -1,18 +1,26 @@
 package cool.scx.http.x.http1.request_line;
 
+import dev.scx.http.exception.ScxHttpException;
+import dev.scx.http.status_code.ScxHttpStatusCode;
+
+import static dev.scx.http.status_code.HttpStatusCode.HTTP_VERSION_NOT_SUPPORTED;
+
 /// InvalidRequestLineHttpVersionException
-///
-/// RequestLine 中非法 Version 异常, 表示 Version 段不正确.
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class InvalidRequestLineHttpVersionException extends Exception {
+public final class InvalidRequestLineHttpVersionException extends Exception implements ScxHttpException {
 
     public final String httpVersionStr;
 
-    public InvalidRequestLineHttpVersionException(String httpVersionStr) {
+    InvalidRequestLineHttpVersionException(String httpVersionStr) {
         this.httpVersionStr = httpVersionStr;
         super("Invalid HttpVersion : " + httpVersionStr);
+    }
+
+    @Override
+    public ScxHttpStatusCode statusCode() {
+        return HTTP_VERSION_NOT_SUPPORTED;
     }
 
 }

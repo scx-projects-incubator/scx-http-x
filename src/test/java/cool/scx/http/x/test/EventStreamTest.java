@@ -1,9 +1,9 @@
 package cool.scx.http.x.test;
 
-import dev.scx.http.media.event_stream.SseEvent;
-import dev.scx.http.media.event_stream.event.EventClientEventStream;
 import cool.scx.http.x.HttpClient;
 import cool.scx.http.x.HttpServer;
+import dev.scx.http.media.event_stream.SseEvent;
+import dev.scx.http.media.event_stream.event.EventClientEventStream;
 import org.testng.annotations.Test;
 
 import java.io.IOException;

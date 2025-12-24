@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.byte_output;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteOutput;
