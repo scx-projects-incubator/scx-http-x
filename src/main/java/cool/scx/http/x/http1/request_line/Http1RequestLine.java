@@ -1,5 +1,7 @@
 package cool.scx.http.x.http1.request_line;
 
+import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
+import cool.scx.http.x.http1.exception.InvalidHttpRequestLineException;
 import cool.scx.http.x.http1.request_line.request_target.RequestTarget;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.version.HttpVersion;
@@ -19,11 +21,11 @@ public record Http1RequestLine(ScxHttpMethod method, RequestTarget requestTarget
         this(method, requestTarget, HTTP_1_1);
     }
 
-    public static Http1RequestLine of(String requestLineStr) throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
+    public static Http1RequestLine of(String requestLineStr) throws InvalidHttpRequestLineException, HttpVersionNotSupportedException {
         return Http1RequestLineHelper.parseRequestLine(requestLineStr);
     }
 
-    public String encode() {
+    public String encode() throws IllegalArgumentException {
         return Http1RequestLineHelper.encodeRequestLine(this);
     }
 
