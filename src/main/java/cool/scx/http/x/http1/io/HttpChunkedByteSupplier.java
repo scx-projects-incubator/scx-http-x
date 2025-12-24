@@ -1,4 +1,4 @@
-package cool.scx.http.x.http1.body_supplier;
+package cool.scx.http.x.http1.io;
 
 import dev.scx.io.ByteChunk;
 import dev.scx.io.ByteInput;
@@ -146,7 +146,7 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
     public void checkMaxPayload(long chunkLength) throws BodyTooLargeException {
         // 检查数据块大小是否超过最大值
         if (position + chunkLength > maxLength) {
-            throw new BodyTooLargeException(CONTENT_TOO_LARGE, "HttpChunk 长度超过最大接受大小 !!!");
+            throw new BodyTooLargeException("HttpChunk 长度超过最大接受大小 !!!");
         }
         position += chunkLength;
     }
