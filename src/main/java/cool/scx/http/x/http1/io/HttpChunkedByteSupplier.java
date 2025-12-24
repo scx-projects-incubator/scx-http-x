@@ -12,8 +12,6 @@ import dev.scx.io.supplier.ByteSupplier;
 import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
-import static dev.scx.http.status_code.HttpStatusCode.BAD_REQUEST;
-import static dev.scx.http.status_code.HttpStatusCode.CONTENT_TOO_LARGE;
 import static cool.scx.http.x.http1.Http1Helper.CRLF_BYTES;
 import static dev.scx.io.ByteChunk.EMPTY_BYTE_CHUNK;
 
@@ -54,9 +52,9 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
             chunkLengthBytes = byteInput.readUntil("\r\n".getBytes(), 32);
         } catch (NoMatchFoundException e) {
             // 没有在限制长度内读取到 分块长度字段
-            throw new HttpChunkedParseException(BAD_REQUEST, "错误的分块长度 !!!");
+            throw new HttpChunkedParseException("错误的分块长度 !!!");
         } catch (NoMoreDataException e) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "数据流提前结束, 分块不完整 !!!");
+            throw new HttpChunkedParseException("数据流提前结束, 分块不完整 !!!");
         } catch (AlreadyClosedException e) {
             throw new ScxIOException("byteInput already closed", e);
         }
@@ -66,7 +64,7 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
         try {
             chunkLength = Long.parseUnsignedLong(chunkLengthStr, 16);
         } catch (NumberFormatException e) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "错误的分块长度 : " + chunkLengthStr);
+            throw new HttpChunkedParseException("错误的分块长度 : " + chunkLengthStr);
         }
 
         //这里做最大长度限制检查
@@ -87,7 +85,7 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
         try {
             byteInput.read(consumer, currentChunkRemaining);
         } catch (NoMoreDataException e) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "数据流提前结束, 分块不完整 !!!");
+            throw new HttpChunkedParseException("数据流提前结束, 分块不完整 !!!");
         } catch (AlreadyClosedException e) {
             throw new ScxIOException("byteInput already closed", e);
         }
@@ -100,10 +98,10 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
                 var bytes = byteInput.readFully(2);
                 // 不是 \r\n
                 if (!Arrays.equals(bytes, CRLF_BYTES)) {
-                    throw new HttpChunkedParseException(BAD_REQUEST, "错误的分块终结数据, 不是 \\r\\n !!!");
+                    throw new HttpChunkedParseException("错误的分块终结数据, 不是 \\r\\n !!!");
                 }
             } catch (NoMoreDataException e) {
-                throw new HttpChunkedParseException(BAD_REQUEST, "数据流提前结束, 分块不完整 !!!");
+                throw new HttpChunkedParseException("数据流提前结束, 分块不完整 !!!");
             } catch (AlreadyClosedException e) {
                 throw new ScxIOException("byteInput already closed", e);
             }
@@ -119,15 +117,15 @@ public final class HttpChunkedByteSupplier implements ByteSupplier {
         try {
             endBytes = byteInput.readUntil("\r\n".getBytes());
         } catch (NoMatchFoundException e) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "错误的终结分块, 终结块不完整: 缺少 \\r\\n !!!");
+            throw new HttpChunkedParseException("错误的终结分块, 终结块不完整: 缺少 \\r\\n !!!");
         } catch (NoMoreDataException e) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "数据流提前结束, 分块不完整 !!!");
+            throw new HttpChunkedParseException("数据流提前结束, 分块不完整 !!!");
         } catch (AlreadyClosedException e) {
             throw new ScxIOException("byteInput already closed", e);
         }
 
         if (endBytes.length != 0) {
-            throw new HttpChunkedParseException(BAD_REQUEST, "错误的终结分块, 应为空块但发现了内容 !!!");
+            throw new HttpChunkedParseException("错误的终结分块, 应为空块但发现了内容 !!!");
         }
         status = Status.FINISHED;
         return null;
