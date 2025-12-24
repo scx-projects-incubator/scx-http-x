@@ -9,7 +9,7 @@ public final class InvalidRequestLineException extends Exception implements ScxH
 
     public final String requestLineStr;
 
-    public InvalidRequestLineException(String requestLineStr) {
+    InvalidRequestLineException(String requestLineStr) {
         super("Invalid RequestLine : " + requestLineStr);
         this.requestLineStr = requestLineStr;
     }

@@ -10,7 +10,7 @@ public final class InvalidStatusLineStatusCodeException extends Exception {
 
     public final String statusCodeStr;
 
-    public InvalidStatusLineStatusCodeException(String statusCodeStr) {
+    InvalidStatusLineStatusCodeException(String statusCodeStr) {
         this.statusCodeStr = statusCodeStr;
         super("Invalid StatusCode : " + statusCodeStr);
     }

@@ -9,7 +9,7 @@ import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 ///
 /// @author scx567888
 /// @version 0.0.1
-public final class Http1StatusLineHelper {
+final class Http1StatusLineHelper {
 
     public static Http1StatusLine parseStatusLine(String statusLineStr) throws InvalidStatusLineException, InvalidStatusLineHttpVersionException, InvalidStatusLineStatusCodeException {
         // 这里和 parseRequestLine 不同, 响应行是允许 空格的. 如 "HTTP/1.1 404 Not Found", 所以这里使用 limit = 3 限制一下.

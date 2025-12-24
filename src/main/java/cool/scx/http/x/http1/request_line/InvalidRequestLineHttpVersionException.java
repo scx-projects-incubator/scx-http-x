@@ -13,7 +13,7 @@ public final class InvalidRequestLineHttpVersionException extends Exception impl
 
     public final String httpVersionStr;
 
-    public InvalidRequestLineHttpVersionException(String httpVersionStr) {
+    InvalidRequestLineHttpVersionException(String httpVersionStr) {
         this.httpVersionStr = httpVersionStr;
         super("Invalid HttpVersion : " + httpVersionStr);
     }
