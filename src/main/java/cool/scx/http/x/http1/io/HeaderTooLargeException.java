@@ -6,7 +6,7 @@ import dev.scx.http.status_code.ScxHttpStatusCode;
 
 public final class HeaderTooLargeException extends Exception implements ScxHttpException {
 
-    public HeaderTooLargeException(String message) {
+    HeaderTooLargeException(String message) {
         super(message);
     }
 
