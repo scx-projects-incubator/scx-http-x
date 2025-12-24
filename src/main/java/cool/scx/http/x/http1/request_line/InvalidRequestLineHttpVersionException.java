@@ -11,8 +11,11 @@ import static dev.scx.http.status_code.HttpStatusCode.HTTP_VERSION_NOT_SUPPORTED
 /// @version 0.0.1
 public final class InvalidRequestLineHttpVersionException extends Exception implements ScxHttpException {
 
-    public InvalidRequestLineHttpVersionException(String message) {
-        super(message);
+    public final String httpVersionStr;
+
+    public InvalidRequestLineHttpVersionException(String httpVersionStr) {
+        this.httpVersionStr = httpVersionStr;
+        super("Invalid HttpVersion : " + httpVersionStr);
     }
 
     @Override

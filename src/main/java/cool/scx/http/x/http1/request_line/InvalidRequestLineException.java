@@ -7,8 +7,11 @@ import static dev.scx.http.status_code.HttpStatusCode.BAD_REQUEST;
 
 public final class InvalidRequestLineException extends Exception implements ScxHttpException {
 
-    public InvalidRequestLineException(String message) {
-        super(message);
+    public final String requestLineStr;
+
+    public InvalidRequestLineException(String requestLineStr) {
+        super("Invalid RequestLine : " + requestLineStr);
+        this.requestLineStr = requestLineStr;
     }
 
     @Override
