@@ -6,11 +6,11 @@ import dev.scx.io.exception.ScxIOException;
 
 import static dev.scx.http.status_code.HttpStatusCode.CONTENT_TOO_LARGE;
 
-/// BodyTooLargeException
-public final class BodyTooLargeException extends ScxIOException implements ScxHttpException {
+/// ContentLengthBodyTooLargeException
+public final class ContentLengthBodyTooLargeException extends Exception implements ScxHttpException {
 
     /// 不允许外界创建
-    BodyTooLargeException(String message) {
+    ContentLengthBodyTooLargeException(String message) {
         super(message);
     }
 
