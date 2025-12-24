@@ -4,20 +4,19 @@ import dev.scx.http.exception.ScxHttpException;
 import dev.scx.http.status_code.ScxHttpStatusCode;
 import dev.scx.io.exception.ScxIOException;
 
-/// BodyToShortException
-public class BodyTooShortException extends ScxIOException implements ScxHttpException {
+import static dev.scx.http.status_code.HttpStatusCode.BAD_REQUEST;
 
-    private final ScxHttpStatusCode statusCode;
+/// BodyToShortException
+public final class BodyTooShortException extends ScxIOException implements ScxHttpException {
 
     /// 不允许外界创建
-    BodyTooShortException(ScxHttpStatusCode statusCode, String message) {
+    BodyTooShortException(String message) {
         super(message);
-        this.statusCode = statusCode;
     }
 
     @Override
     public ScxHttpStatusCode statusCode() {
-        return statusCode;
+        return BAD_REQUEST;
     }
 
 }

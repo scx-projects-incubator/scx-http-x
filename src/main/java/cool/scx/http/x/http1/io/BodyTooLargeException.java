@@ -4,20 +4,19 @@ import dev.scx.http.exception.ScxHttpException;
 import dev.scx.http.status_code.ScxHttpStatusCode;
 import dev.scx.io.exception.ScxIOException;
 
-/// BodyTooLargeException
-public class BodyTooLargeException extends ScxIOException implements ScxHttpException {
+import static dev.scx.http.status_code.HttpStatusCode.CONTENT_TOO_LARGE;
 
-    private final ScxHttpStatusCode statusCode;
+/// BodyTooLargeException
+public final class BodyTooLargeException extends ScxIOException implements ScxHttpException {
 
     /// 不允许外界创建
-    BodyTooLargeException(ScxHttpStatusCode statusCode, String message) {
+    BodyTooLargeException(String message) {
         super(message);
-        this.statusCode = statusCode;
     }
 
     @Override
     public ScxHttpStatusCode statusCode() {
-        return statusCode;
+        return CONTENT_TOO_LARGE;
     }
 
 }
