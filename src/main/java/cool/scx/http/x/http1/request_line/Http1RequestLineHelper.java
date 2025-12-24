@@ -1,7 +1,5 @@
 package cool.scx.http.x.http1.request_line;
 
-import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
-import cool.scx.http.x.http1.exception.InvalidHttpRequestLineException;
 import cool.scx.http.x.http1.request_line.request_target.*;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.version.HttpVersion;
@@ -19,14 +17,14 @@ import static dev.scx.http.version.HttpVersion.HTTP_1_1;
 public final class Http1RequestLineHelper {
 
     /// 解析 请求行
-    public static Http1RequestLine parseRequestLine(String requestLineStr) throws InvalidHttpRequestLineException, HttpVersionNotSupportedException {
+    public static Http1RequestLine parseRequestLine(String requestLineStr) throws InvalidRequestLineException, InvalidRequestLineHttpVersionException {
         var parts = requestLineStr.split(" ", -1);
 
         // 如果长度等于 2, 则可能是 HTTP/0.9 请求
         // 如果长度大于 3, 则可能是 路径中包含意外的空格
         // 但是此处我们没必要细化异常 全部抛出 InvalidHttpRequestLineException 异常
         if (parts.length != 3) {
-            throw new InvalidHttpRequestLineException("Invalid HTTP request line : " + requestLineStr);
+            throw new InvalidRequestLineException("Invalid HTTP request line : " + requestLineStr);
         }
 
         var methodStr = parts[0];
@@ -38,7 +36,7 @@ public final class Http1RequestLineHelper {
 
         // 这里我们强制 版本号必须是 HTTP/1.1 , 这里需要细化一下 异常
         if (httpVersion != HTTP_1_1) {
-            throw new HttpVersionNotSupportedException("Invalid HTTP version : " + httpVersionStr);
+            throw new InvalidRequestLineHttpVersionException("Invalid HTTP version : " + httpVersionStr);
         }
 
         RequestTarget requestTarget;
@@ -47,27 +45,27 @@ public final class Http1RequestLineHelper {
             try {
                 requestTarget = AuthorityForm.of(requestTargetStr);  // CONNECT 使用 Authority 格式
             } catch (URISyntaxException e) {
-                throw new InvalidHttpRequestLineException("Invalid HTTP request line : " + requestLineStr);
+                throw new InvalidRequestLineException("Invalid HTTP request line : " + requestLineStr);
             }
         } else if (requestTargetStr.startsWith("/")) {
             try {
                 requestTarget = OriginForm.of(requestTargetStr);
             } catch (URISyntaxException e) {
-                throw new InvalidHttpRequestLineException("Invalid HTTP request line : " + requestLineStr);
+                throw new InvalidRequestLineException("Invalid HTTP request line : " + requestLineStr);
             }
         } else if ("*".equals(requestTargetStr)) {
             // 只有 OPTIONS 允许 *
             if (method == OPTIONS) {
                 requestTarget = AsteriskForm.of();
             } else {
-                throw new InvalidHttpRequestLineException("Invalid HTTP request line : " + requestLineStr);
+                throw new InvalidRequestLineException("Invalid HTTP request line : " + requestLineStr);
             }
         } else {
             // 这里只可能是 AbsoluteForm, 或者非法字符串
             try {
                 requestTarget = AbsoluteForm.of(requestTargetStr);
             } catch (URISyntaxException e) {
-                throw new InvalidHttpRequestLineException("Invalid HTTP request line : " + requestLineStr);
+                throw new InvalidRequestLineException("Invalid HTTP request line : " + requestLineStr);
             }
         }
 
