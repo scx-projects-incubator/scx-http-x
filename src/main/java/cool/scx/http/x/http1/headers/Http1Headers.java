@@ -1,13 +1,13 @@
 package cool.scx.http.x.http1.headers;
 
-import dev.scx.http.headers.ScxHttpHeaderName;
-import dev.scx.http.headers.ScxHttpHeaders;
-import dev.scx.http.headers.ScxHttpHeadersImpl;
 import cool.scx.http.x.http1.headers.connection.Connection;
 import cool.scx.http.x.http1.headers.connection.ScxConnection;
 import cool.scx.http.x.http1.headers.expect.ScxExpect;
 import cool.scx.http.x.http1.headers.transfer_encoding.ScxTransferEncoding;
 import cool.scx.http.x.http1.headers.upgrade.ScxUpgrade;
+import dev.scx.http.headers.ScxHttpHeaderName;
+import dev.scx.http.headers.ScxHttpHeaders;
+import dev.scx.http.headers.ScxHttpHeadersImpl;
 
 import static dev.scx.http.headers.HttpHeaderName.*;
 
