@@ -4,9 +4,9 @@ import dev.scx.http.exception.ScxHttpException;
 import dev.scx.http.status_code.HttpStatusCode;
 import dev.scx.http.status_code.ScxHttpStatusCode;
 
-public final class BodyToLargeException extends Exception implements ScxHttpException {
+public final class BodyTooLargeException extends Exception implements ScxHttpException {
 
-    public BodyToLargeException(String message) {
+    public BodyTooLargeException(String message) {
         super(message);
     }
 
