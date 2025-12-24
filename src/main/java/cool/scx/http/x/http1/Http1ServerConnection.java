@@ -1,32 +1,30 @@
 package cool.scx.http.x.http1;
 
-import cool.scx.http.x.http1.body_supplier.AutoContinueByteSupplier;
-import cool.scx.http.x.http1.exception.HttpVersionNotSupportedException;
-import cool.scx.http.x.http1.exception.RequestHeaderFieldsTooLargeException;
 import cool.scx.http.x.http1.headers.Http1Headers;
+import cool.scx.http.x.http1.io.*;
 import cool.scx.http.x.http1.request_line.Http1RequestLine;
+import cool.scx.http.x.http1.request_line.InvalidRequestLineException;
+import cool.scx.http.x.http1.request_line.InvalidRequestLineHttpVersionException;
 import cool.scx.http.x.http1.request_line.request_target.OriginForm;
 import dev.scx.function.Function1Void;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.error_handler.ErrorPhase;
 import dev.scx.http.error_handler.ScxHttpServerErrorHandler;
-import dev.scx.http.exception.BadRequestException;
-import dev.scx.http.exception.ContentTooLargeException;
-import dev.scx.http.exception.URITooLongException;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.io.ByteInput;
 import dev.scx.io.ByteOutput;
 import dev.scx.io.ScxIO;
 import dev.scx.io.exception.AlreadyClosedException;
+import dev.scx.io.exception.NoMoreDataException;
 import dev.scx.io.exception.ScxIOException;
 import dev.scx.io.input.NullByteInput;
+import dev.scx.io.supplier.ByteSupplier;
 
 import java.io.IOException;
 import java.lang.System.Logger;
 import java.net.Socket;
 
 import static cool.scx.http.x.http1.Http1Helper.*;
-import static cool.scx.http.x.http1.Http1Reader.*;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
 import static cool.scx.http.x.http1.headers.expect.Expect.CONTINUE;
 import static dev.scx.http.error_handler.DefaultHttpServerErrorHandler.DEFAULT_HTTP_SERVER_ERROR_HANDLER;
@@ -105,15 +103,39 @@ public class Http1ServerConnection {
 
     }
 
-    private ScxHttpServerRequest readRequest() throws BadRequestException, URITooLongException, HttpVersionNotSupportedException, RequestHeaderFieldsTooLargeException, CloseConnectionException, ContentTooLargeException {
+    private ScxHttpServerRequest readRequest() throws CloseConnectionException, InvalidRequestLineException, InvalidRequestLineHttpVersionException, RequestLineTooLongException, HeaderTooLargeException, ContentLengthBodyTooLargeException {
         // 1, 读取 请求行
-        var requestLine = readRequestLine(dataReader, options.maxRequestLineSize());
+        Http1RequestLine requestLine;
+        try {
+            requestLine = Http1Reader.readRequestLine(dataReader, options.maxRequestLineSize());
+        } catch (ScxIOException | AlreadyClosedException | NoMoreDataException e) {
+            // 这表示底层 socket 出现问题 我们需要关闭连接
+            throw new CloseConnectionException();
+        } catch (RequestLineTooLongException | InvalidRequestLineException | InvalidRequestLineHttpVersionException e) {
+            // 其余异常我们可以 向客户端返回
+            throw e;
+        }
 
         // 2, 读取 请求头
-        var headers = readHeaders(dataReader, options.maxHeaderSize());
+        Http1Headers headers;
+        try {
+            headers = Http1Reader.readHeaders(dataReader, options.maxHeaderSize());
+        } catch (ScxIOException | AlreadyClosedException | NoMoreDataException e) {
+            // 这表示底层 socket 出现问题 我们需要关闭连接
+            throw new CloseConnectionException();
+        } catch (HeaderTooLargeException e) {
+            // 其余异常我们可以 向客户端返回
+            throw e;
+        }
 
         // 3, 读取 请求体流
-        var bodyByteSupplier = readBodyByteInput(headers, dataReader, options.maxPayloadSize());
+        ByteSupplier bodyByteSupplier;
+        try {
+            bodyByteSupplier = Http1Reader.readBodyByteInput(headers, dataReader, options.maxPayloadSize());
+        } catch (ContentLengthBodyTooLargeException e) {
+            // 其余异常我们可以 向客户端返回
+            throw e;
+        }
 
         // 4, 在交给用户处理器进行处理之前, 我们需要做一些预处理
 
