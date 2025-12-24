@@ -1,16 +1,17 @@
 package cool.scx.http.x.http1;
 
+import cool.scx.http.x.http1.headers.Http1Headers;
+import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.body.ScxHttpBody;
 import dev.scx.http.method.ScxHttpMethod;
 import dev.scx.http.peer_info.PeerInfo;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.version.HttpVersion;
-import cool.scx.http.x.http1.headers.Http1Headers;
-import cool.scx.http.x.http1.request_line.Http1RequestLine;
 import dev.scx.io.ByteInput;
 
-import static cool.scx.http.x.http1.Http1Helper.*;
+import static cool.scx.http.x.http1.Http1Helper.getLocalPeer;
+import static cool.scx.http.x.http1.Http1Helper.getRemotePeer;
 import static cool.scx.http.x.http1.headers.connection.Connection.CLOSE;
 
 /// HTTP/1.1 ServerRequest

@@ -1,11 +1,11 @@
 package cool.scx.http.x;
 
+import cool.scx.http.x.http1.Http1ServerConnection;
+import cool.scx.http.x.http2.Http2ServerConnection;
 import dev.scx.function.Function1Void;
 import dev.scx.http.ScxHttpServer;
 import dev.scx.http.ScxHttpServerRequest;
 import dev.scx.http.error_handler.ScxHttpServerErrorHandler;
-import cool.scx.http.x.http1.Http1ServerConnection;
-import cool.scx.http.x.http2.Http2ServerConnection;
 import dev.scx.tcp.ScxTCPServer;
 import dev.scx.tcp.TCPServer;
 

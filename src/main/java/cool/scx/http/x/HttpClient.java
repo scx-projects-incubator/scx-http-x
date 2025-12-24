@@ -1,9 +1,9 @@
 package cool.scx.http.x;
 
+import cool.scx.http.x.http1.Http1ClientConnection;
 import dev.scx.http.ScxHttpClient;
 import dev.scx.http.uri.ScxURI;
 import dev.scx.http.version.HttpVersion;
-import cool.scx.http.x.http1.Http1ClientConnection;
 import dev.scx.tcp.TCPClient;
 import dev.scx.tcp.tls.TLS;
 
