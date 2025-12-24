@@ -65,7 +65,7 @@ public class HttpClientRequest implements Http1ClientRequest, Http2ClientRequest
         Socket tcpSocket;
 
         try {
-            tcpSocket = httpClient.createTCPSocket(uri, getApplicationProtocols());
+            tcpSocket = httpClient.createSocket(uri, getApplicationProtocols());
         } catch (IOException e) {
             throw new HttpSendException("创建连接失败 !!!", e);
         }
